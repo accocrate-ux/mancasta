@@ -1,0 +1,84 @@
+function culqi() {
+  var btn = document.getElementById('culqiPayBtn');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '⏳ Procesando pago...';
+  }
+
+  if (Culqi.token) {
+    var token        = Culqi.token.id;
+    var email        = document.getElementById('fEmail').value.trim();
+    var totalCentimos = Math.round(grandTotal() * 100);
+    var flLine       = FL.filter(function(f){ return f.qty > 0; })
+                         .map(function(f){ return f.qty + 'x ' + f.name; }).join(' + ');
+
+    // ── Llamar al backend de Netlify ──────────────────────
+    fetch('/.netlify/functions/cobrar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token:       token,
+        amount:      totalCentimos,
+        email:       email,
+        description: 'Pack x' + (pack ? pack.qty : '') + ' — ' + flLine
+      })
+    })
+    .then(function(res){ return res.json(); })
+    .then(function(data) {
+      if (data.success) {
+        // ✅ PAGO REAL CONFIRMADO
+        var nm  = document.getElementById('fName').value.trim();
+        var ph  = document.getElementById('fPhone').value.trim();
+        var dc  = delCost();
+        var address = (document.getElementById('fAddress')||{value:''}).value.trim();
+
+        var sep = '─────────────────';
+        var lines = [
+          '🥟 *PAGO CONFIRMADO — La Empanada Dorada*', sep, '',
+          '✅ *CARGO APROBADO*',
+          '   ID: ' + data.charge_id, '',
+          '📅 *FECHA DE ENTREGA*',
+          '   ' + (selDate ? dateLong(selDate) : '—'), '',
+          '🛒 *PEDIDO*',
+          '   Pack x' + pack.qty + ': ' + flLine,
+          '   Total cobrado: ' + fmt(grandTotal())
+        ];
+
+        if (activeDiscount) lines.push('   🏷️ Descuento ' + activeDiscount.code + ': −' + fmt(discAmt()));
+        if (delivMode === 'store') {
+          lines.push('', '🏠 *ENTREGA*', '   Recojo en tienda');
+        } else if (selZone) {
+          lines.push('', '🛵 *ENTREGA*', '   ' + selZone.name);
+          if (address) lines.push('   ' + address);
+          lines.push('   Envío ref.: ~' + fmt(dc));
+        }
+        lines.push('', sep, '👤 ' + nm, '📱 ' + ph, '📧 ' + email, '', '¡Gracias! 🥟');
+
+        var waLink = 'https://wa.me/51925863778?text=' + encodeURIComponent(lines.join('\n'));
+        document.getElementById('waBtn').href = waLink;
+
+        try { localStorage.removeItem('empanada_state'); } catch(e) {}
+        Culqi.close();
+        document.getElementById('successPage').classList.add('on');
+        launchConfetti();
+        setTimeout(function(){ window.open(waLink, '_blank'); }, 400);
+
+      } else {
+        // ❌ Pago rechazado
+        toast('⚠️ ' + (data.error || 'El pago fue rechazado. Intenta con otra tarjeta.'), 6000);
+        if (btn) { btn.disabled = false; btn.textContent = '💳 Pagar ahora — seguro con Culqi'; }
+      }
+    })
+    .catch(function(err) {
+      toast('❌ Error de conexión. Verifica tu internet e intenta de nuevo.', 5000);
+      console.error('Error al cobrar:', err);
+      if (btn) { btn.disabled = false; btn.textContent = '💳 Pagar ahora — seguro con Culqi'; }
+    });
+
+  } else {
+    // Usuario cerró el modal sin pagar
+    var errMsg = (Culqi.error && Culqi.error.user_message) ? Culqi.error.user_message : '';
+    if (errMsg) toast('⚠️ ' + errMsg, 5000);
+    if (btn) { btn.disabled = false; btn.textContent = '💳 Pagar ahora — seguro con Culqi'; }
+  }
+}

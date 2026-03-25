@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Contáctanos — La Empanada Dorada</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --gold:#C8902A; --gold2:#E8B84B; --gold3:#f5d78e;
+  --brown:#1C0D00; --brown2:#2E1800; --brown3:#3d2008;
+  --cream:#FDF6E3; --c2:rgba(253,246,227,.75); --c3:rgba(253,246,227,.4);
+  --red:#C0392B;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--brown);color:var(--cream);min-height:100vh;overflow-x:hidden;}
+
+/* BG */
+.bg-layer{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.bg-orb{position:absolute;border-radius:50%;filter:blur(80px);animation:orbDrift ease-in-out infinite;}
+.orb1{width:500px;height:500px;background:radial-gradient(circle,rgba(200,144,42,.07),transparent);top:-10%;left:-10%;animation-duration:18s;}
+.orb2{width:400px;height:400px;background:radial-gradient(circle,rgba(200,144,42,.05),transparent);bottom:-5%;right:-5%;animation-duration:14s;animation-delay:-7s;}
+.orb3{width:300px;height:300px;background:radial-gradient(circle,rgba(192,57,43,.04),transparent);top:40%;left:60%;animation-duration:22s;animation-delay:-11s;}
+@keyframes orbDrift{0%,100%{transform:translate(0,0)}33%{transform:translate(30px,-20px)}66%{transform:translate(-20px,30px)}}
+.particle{position:absolute;border-radius:50%;background:var(--gold);opacity:0;animation:particleFly linear infinite;}
+@keyframes particleFly{0%{transform:translateY(100vh) translateX(0);opacity:0}10%{opacity:.4}90%{opacity:.15}100%{transform:translateY(-5vh) translateX(var(--dx));opacity:0}}
+
+/* RIBBON */
+.ribbon{position:fixed;top:0;left:0;right:0;height:3px;z-index:100;background:linear-gradient(90deg,var(--gold),var(--red),var(--gold2),var(--red),var(--gold));background-size:300% 100%;animation:ribbonMove 4s linear infinite;}
+@keyframes ribbonMove{0%{background-position:0%}100%{background-position:300%}}
+
+/* NAV */
+nav{position:fixed;top:3px;left:0;right:0;z-index:50;padding:1.2rem 3rem;display:flex;align-items:center;justify-content:space-between;background:rgba(28,13,0,.88);backdrop-filter:blur(20px);border-bottom:1px solid rgba(200,144,42,.1);}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--gold);text-decoration:none;letter-spacing:2px;display:flex;align-items:center;gap:.5rem;}
+.logo-spin{display:inline-block;animation:spinSlow 10s linear infinite;}
+@keyframes spinSlow{to{transform:rotate(360deg)}}
+.nav-back{display:flex;align-items:center;gap:.5rem;color:var(--c3);text-decoration:none;font-size:.8rem;letter-spacing:1.5px;text-transform:uppercase;transition:color .3s;}
+.nav-back:hover{color:var(--gold);}
+
+/* HERO */
+.page-hero{padding:10rem 2rem 3rem;text-align:center;position:relative;z-index:1;}
+.hero-tag{display:inline-flex;align-items:center;gap:.5rem;background:rgba(200,144,42,.1);border:1px solid rgba(200,144,42,.3);color:var(--gold);padding:.35rem 1.1rem;border-radius:2rem;font-size:.72rem;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:1.4rem;animation:fadeUp .7s ease .1s both;}
+.tag-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:.3}50%{opacity:1}}
+.page-hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.8rem,7vw,5rem);line-height:.95;margin-bottom:1rem;animation:fadeUp .7s ease .2s both;}
+.page-hero h1 em{color:var(--gold);font-style:italic;}
+.page-hero p{color:var(--c3);font-size:.98rem;max-width:480px;margin:0 auto;line-height:1.85;animation:fadeUp .7s ease .3s both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* MOTIVO PILLS */
+.motivo-strip{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin:2.2rem auto 0;max-width:680px;animation:fadeUp .7s ease .4s both;}
+.mpill{display:flex;align-items:center;gap:.45rem;background:rgba(253,246,227,.04);border:1.5px solid rgba(200,144,42,.12);color:var(--c2);padding:.5rem 1.1rem;border-radius:2rem;font-size:.8rem;cursor:pointer;transition:all .3s cubic-bezier(.34,1.3,.64,1);position:relative;overflow:hidden;}
+.mpill::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(200,144,42,.15),transparent);opacity:0;transition:opacity .3s;}
+.mpill:hover::before,.mpill.active::before{opacity:1;}
+.mpill:hover,.mpill.active{border-color:rgba(200,144,42,.6);color:var(--gold2);transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.3);}
+.mpill.active{font-weight:700;}
+.mpill-em{font-size:1rem;transition:transform .3s;}
+.mpill:hover .mpill-em,.mpill.active .mpill-em{transform:scale(1.3) rotate(-5deg);}
+
+/* MAIN */
+.main-wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:2rem 1.5rem 6rem;}
+
+/* CARD */
+.form-card{background:rgba(46,24,0,.65);backdrop-filter:blur(24px);border:1px solid rgba(200,144,42,.18);border-radius:2rem;padding:3rem 3rem 2.5rem;box-shadow:0 40px 80px rgba(0,0,0,.5),0 0 0 1px rgba(200,144,42,.05);position:relative;overflow:hidden;animation:fadeUp .7s ease .5s both;}
+.form-card::before{content:'';position:absolute;top:-80px;right:-80px;width:250px;height:250px;background:radial-gradient(circle,rgba(200,144,42,.06),transparent);border-radius:50%;pointer-events:none;}
+
+/* SECTION LABEL */
+.s-label{display:flex;align-items:center;gap:.5rem;font-size:.68rem;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:1.8rem;position:relative;z-index:1;}
+.s-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(200,144,42,.3),transparent);}
+.s-label em{font-style:italic;letter-spacing:normal;font-family:'Cormorant Garamond',serif;font-size:.95rem;margin-left:.3rem;color:var(--c2);}
+
+/* FIELDS */
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:1.2rem;}
+.field{position:relative;margin-bottom:1.2rem;}
+.field label{display:block;font-size:.71rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--c3);margin-bottom:.55rem;transition:color .3s;}
+.field:focus-within label{color:var(--gold);}
+.field-inner{position:relative;}
+.field-ico{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:1rem;pointer-events:none;transition:transform .3s;z-index:2;}
+.field:focus-within .field-ico{transform:translateY(-50%) scale(1.2);}
+.field input,.field select,.field textarea{width:100%;padding:13px 14px 13px 42px;background:rgba(253,246,227,.04);border:1.5px solid rgba(200,144,42,.15);border-radius:12px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.9rem;color:var(--cream);outline:none;transition:border-color .3s,box-shadow .3s,background .3s;appearance:none;-webkit-appearance:none;}
+.field input::placeholder,.field textarea::placeholder{color:rgba(253,246,227,.2);}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(200,144,42,.6);background:rgba(200,144,42,.04);box-shadow:0 0 0 4px rgba(200,144,42,.08);}
+.field.error input,.field.error select,.field.error textarea{border-color:rgba(192,57,43,.6);box-shadow:0 0 0 4px rgba(192,57,43,.08);}
+.field-err{font-size:.72rem;color:#f87171;margin-top:.35rem;padding-left:4px;display:none;font-weight:600;}
+.field.error .field-err{display:block;}
+.field textarea{resize:none;height:110px;padding-top:13px;line-height:1.6;}
+.select-wrap{position:relative;}
+.select-wrap::after{content:'▾';position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--gold);pointer-events:none;font-size:.8rem;}
+.field select{padding-right:36px;cursor:pointer;}
+.field select option{background:var(--brown2);color:var(--cream);}
+
+/* RATING */
+.rating-wrap{margin-bottom:1.2rem;display:none;}
+.rating-wrap label{display:block;font-size:.71rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--c3);margin-bottom:.6rem;}
+.stars-row{display:flex;gap:.35rem;}
+.star-btn{font-size:1.8rem;cursor:pointer;background:none;border:none;filter:grayscale(1) brightness(.5);transition:transform .25s cubic-bezier(.34,1.5,.64,1),filter .2s;padding:0;line-height:1;}
+.star-btn.lit,.star-btn:hover{filter:grayscale(0) brightness(1.1);}
+.star-btn:hover{transform:scale(1.3) rotate(-10deg);}
+
+/* ATTACH */
+.attach-zone{border:1.5px dashed rgba(200,144,42,.25);border-radius:12px;padding:1.2rem;text-align:center;cursor:pointer;transition:all .3s;margin-bottom:1.2rem;position:relative;overflow:hidden;display:none;}
+.attach-zone:hover,.attach-zone.dragover{border-color:rgba(200,144,42,.6);background:rgba(200,144,42,.04);}
+.attach-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.attach-em{font-size:1.5rem;display:block;margin-bottom:.3rem;}
+.attach-txt{font-size:.8rem;color:var(--c3);}
+.attach-txt strong{color:var(--gold);}
+.attach-name{font-size:.78rem;color:var(--gold2);margin-top:.3rem;display:none;}
+
+/* DIVIDER */
+.divider{display:flex;align-items:center;gap:1rem;margin:2rem 0;}
+.divider-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(200,144,42,.2),transparent);}
+.divider-icon{font-size:.85rem;color:rgba(200,144,42,.4);}
+
+/* PRIVACY */
+.privacy-row{display:flex;align-items:flex-start;gap:.75rem;margin-bottom:1.8rem;padding:.9rem 1rem;background:rgba(200,144,42,.04);border:1px solid rgba(200,144,42,.1);border-radius:10px;}
+.privacy-check{width:18px;height:18px;flex-shrink:0;margin-top:2px;accent-color:var(--gold);cursor:pointer;}
+.privacy-txt{font-size:.78rem;color:var(--c3);line-height:1.65;}
+
+/* SUBMIT */
+.btn-submit{width:100%;padding:1.1rem;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:14px;font-family:'Cormorant Garamond',serif;font-size:1.25rem;font-weight:700;color:var(--brown);cursor:pointer;position:relative;overflow:hidden;transition:transform .2s,box-shadow .3s;box-shadow:0 10px 30px rgba(200,144,42,.35);letter-spacing:.5px;}
+.btn-submit::before{content:'';position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.25),transparent);animation:btnShine 2.8s ease-in-out infinite;}
+@keyframes btnShine{0%{left:-80%}60%{left:130%}100%{left:130%}}
+.btn-submit:hover{transform:translateY(-4px) scale(1.01);box-shadow:0 18px 45px rgba(200,144,42,.5);}
+.btn-submit:active{transform:translateY(0) scale(.98);}
+.btn-submit .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.3);transform:scale(0);animation:rippleAnim .6s linear;pointer-events:none;}
+@keyframes rippleAnim{to{transform:scale(5);opacity:0;}}
+.btn-text{display:flex;align-items:center;justify-content:center;gap:.6rem;position:relative;z-index:1;}
+.spinner{display:none;width:20px;height:20px;border:3px solid rgba(28,13,0,.3);border-top-color:var(--brown);border-radius:50%;animation:giro .7s linear infinite;margin:0 auto;}
+@keyframes giro{to{transform:rotate(360deg)}}
+.btn-submit.loading .btn-text{display:none;}
+.btn-submit.loading .spinner{display:block;}
+
+/* SUCCESS */
+.success-screen{display:none;text-align:center;padding:3rem 1rem;animation:fadeUp .6s ease both;}
+.success-em{font-size:5rem;display:block;animation:successBounce .8s cubic-bezier(.34,1.5,.64,1) both;margin-bottom:1rem;}
+@keyframes successBounce{from{transform:scale(0) rotate(-180deg)}to{transform:scale(1) rotate(0)}}
+.success-title{font-family:'Cormorant Garamond',serif;font-size:2.5rem;color:var(--gold);margin-bottom:.7rem;}
+.success-msg{color:var(--c3);line-height:1.8;max-width:380px;margin:0 auto 2rem;}
+.btn-back{display:inline-flex;align-items:center;gap:.5rem;background:transparent;border:1.5px solid rgba(200,144,42,.4);color:var(--gold);padding:.75rem 1.8rem;border-radius:2rem;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .3s;text-decoration:none;}
+.btn-back:hover{background:rgba(200,144,42,.1);border-color:rgba(200,144,42,.7);}
+
+/* SHAKE */
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.shake{animation:shake .45s ease;}
+
+/* TOAST */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);background:rgba(28,13,0,.96);border:1px solid rgba(200,144,42,.4);color:var(--cream);padding:.9rem 1.6rem;border-radius:3rem;font-size:.85rem;z-index:999;display:flex;align-items:center;gap:.7rem;transition:transform .45s cubic-bezier(.34,1.3,.64,1),opacity .35s;opacity:0;white-space:nowrap;box-shadow:0 10px 40px rgba(0,0,0,.4);backdrop-filter:blur(10px);}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+/* FOOTER */
+.page-footer{text-align:center;padding:1.5rem;color:rgba(253,246,227,.2);font-size:.75rem;position:relative;z-index:1;border-top:1px solid rgba(200,144,42,.06);}
+.page-footer a{color:var(--gold);text-decoration:none;opacity:.7;}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  nav{padding:1rem 1.2rem;}
+  .page-hero{padding:8rem 1.2rem 2.5rem;}
+  .form-card{padding:1.8rem 1.3rem 1.6rem;border-radius:1.4rem;}
+  .field-row{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="ribbon"></div>
+
+<div class="bg-layer">
+  <div class="bg-orb orb1"></div>
+  <div class="bg-orb orb2"></div>
+  <div class="bg-orb orb3"></div>
+</div>
+
+<div class="toast" id="toast">
+  <span id="toastIcon">🥟</span>
+  <span id="toastMsg">Enviado</span>
+</div>
+
+<nav>
+  <a href="index.html" class="nav-logo"><span class="logo-spin">🥟</span> La Empanada Dorada</a>
+  <a href="index.html" class="nav-back">← Volver al inicio</a>
+</nav>
+
+<div class="page-hero">
+  <div class="hero-tag"><span class="tag-dot"></span>Estamos para escucharte</div>
+  <h1>Escríbenos,<br><em>con gusto te atendemos</em></h1>
+  <p>Para reservas, trabajar con nosotros, dejar una reseña o simplemente saludarnos — este espacio es tuyo.</p>
+
+  <div class="motivo-strip">
+    <div class="mpill active" data-motivo="pedido" onclick="setMotivo(this)">
+      <span class="mpill-em">📋</span> Consulta de pedido
+    </div>
+    <div class="mpill" data-motivo="trabajo" onclick="setMotivo(this)">
+      <span class="mpill-em">💼</span> Quiero trabajar aquí
+    </div>
+    <div class="mpill" data-motivo="resena" onclick="setMotivo(this)">
+      <span class="mpill-em">⭐</span> Dejar una reseña
+    </div>
+    <div class="mpill" data-motivo="sugerencia" onclick="setMotivo(this)">
+      <span class="mpill-em">💡</span> Sugerencia
+    </div>
+    <div class="mpill" data-motivo="otro" onclick="setMotivo(this)">
+      <span class="mpill-em">✉️</span> Otro motivo
+    </div>
+  </div>
+</div>
+
+<div class="main-wrap">
+  <div class="form-card" id="formCard">
+
+    <form id="contactForm" autocomplete="off">
+
+      <div class="s-label">Tus datos <em>¿quién nos escribe?</em></div>
+
+      <div class="field-row">
+        <div class="field" id="f-nombre">
+          <label for="nombre">Nombre completo</label>
+          <div class="field-inner">
+            <span class="field-ico">👤</span>
+            <input type="text" id="nombre" placeholder="Tu nombre">
+          </div>
+          <div class="field-err">Por favor dinos tu nombre 😊</div>
+        </div>
+        <div class="field" id="f-email">
+          <label for="email">Correo electrónico</label>
+          <div class="field-inner">
+            <span class="field-ico">📧</span>
+            <input type="email" id="email" placeholder="tu@correo.com">
+          </div>
+          <div class="field-err">Ingresa un correo válido 📧</div>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="telefono">Teléfono <span style="color:rgba(253,246,227,.2);font-weight:400">(opcional)</span></label>
+          <div class="field-inner">
+            <span class="field-ico">📱</span>
+            <input type="tel" id="telefono" placeholder="9XX XXX XXX">
+          </div>
+        </div>
+        <div class="field">
+          <label for="motivoSel">Motivo del mensaje</label>
+          <div class="field-inner select-wrap">
+            <span class="field-ico">📂</span>
+            <select id="motivoSel" onchange="setMotivoPorSelect(this.value)">
+              <option value="pedido">📋 Consulta de pedido</option>
+              <option value="trabajo">💼 Quiero trabajar aquí</option>
+              <option value="resena">⭐ Dejar una reseña</option>
+              <option value="sugerencia">💡 Sugerencia</option>
+              <option value="otro">✉️ Otro motivo</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- RATING: solo visible en reseña -->
+      <div class="rating-wrap" id="ratingWrap">
+        <label>¿Cómo calificarías tu experiencia?</label>
+        <div class="stars-row" id="starsRow">
+          <button type="button" class="star-btn" data-val="1">⭐</button>
+          <button type="button" class="star-btn" data-val="2">⭐</button>
+          <button type="button" class="star-btn" data-val="3">⭐</button>
+          <button type="button" class="star-btn" data-val="4">⭐</button>
+          <button type="button" class="star-btn" data-val="5">⭐</button>
+        </div>
+      </div>
+
+      <!-- CV: solo visible en trabajo -->
+      <div class="attach-zone" id="cvZone">
+        <input type="file" id="cvFile" accept=".pdf,.doc,.docx,.jpg,.png">
+        <span class="attach-em">📎</span>
+        <div class="attach-txt">Adjunta tu CV — <strong>PDF, Word o imagen</strong></div>
+        <div class="attach-name" id="cvFileName"></div>
+      </div>
+
+      <div class="divider">
+        <div class="divider-line"></div>
+        <div class="divider-icon">🌶️</div>
+        <div class="divider-line"></div>
+      </div>
+
+      <div class="s-label">Tu mensaje <em>cuéntanos todo</em></div>
+
+      <div class="field" id="f-asunto">
+        <label for="asunto">Asunto</label>
+        <div class="field-inner">
+          <span class="field-ico">📝</span>
+          <input type="text" id="asunto" placeholder="¿De qué se trata?">
+        </div>
+        <div class="field-err">Ponle un asunto a tu mensaje</div>
+      </div>
+
+      <div class="field" id="f-mensaje">
+        <label for="mensaje">Mensaje</label>
+        <div class="field-inner">
+          <span class="field-ico" style="top:16px;transform:none;">💬</span>
+          <textarea id="mensaje" placeholder="Escríbenos lo que quieras..."></textarea>
+        </div>
+        <div class="field-err">Escríbenos algo, ¡te leemos! 👂</div>
+      </div>
+
+      <div class="privacy-row">
+        <input type="checkbox" class="privacy-check" id="privacidad">
+        <div class="privacy-txt">
+          Al enviar aceptas que guardemos tu información para responderte. No compartimos tus datos con terceros. 🔒
+        </div>
+      </div>
+
+      <button type="button" class="btn-submit" id="btnSubmit">
+        <div class="btn-text">🥟 Enviar mensaje</div>
+        <div class="spinner"></div>
+      </button>
+
+    </form>
+
+    <div class="success-screen" id="successScreen">
+      <span class="success-em">🎉</span>
+      <div class="success-title">¡Mensaje enviado!</div>
+      <p class="success-msg" id="successMsg">Gracias por escribirnos. Te responderemos pronto.</p>
+      <a href="index.html" class="btn-back">← Volver al inicio</a>
+    </div>
+
+  </div>
+</div>
+
+<div class="page-footer">
+  © 2025 La Empanada Dorada · 📱 <a href="https://wa.me/51989489503">989 489 503</a> · Lima, Perú
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ── SUPABASE ──
+const SUPA_URL = "https://jpayjofxrkofbdmkykwz.supabase.co";
+const SUPA_KEY = "sb_publishable_CiyuoJMygYaTDUw43NjSYg_hAN_syPp";
+const db = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+
+// ── PARTICLES ──
+(function(){
+  const layer = document.querySelector('.bg-layer');
+  for(let i = 0; i < 18; i++){
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const sz = 1 + Math.random() * 2;
+    p.style.cssText = `left:${Math.random()*100}%;--dx:${(Math.random()-.5)*120}px;animation-duration:${10+Math.random()*15}s;animation-delay:${Math.random()*-20}s;width:${sz}px;height:${sz}px;`;
+    layer.appendChild(p);
+  }
+})();
+
+// ── MOTIVO ──
+let motivoActual = 'pedido';
+let ratingVal = 0;
+
+function setMotivo(el) {
+  document.querySelectorAll('.mpill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  motivoActual = el.dataset.motivo;
+  document.getElementById('motivoSel').value = motivoActual;
+  actualizarUI(motivoActual);
+}
+
+function setMotivoPorSelect(val) {
+  motivoActual = val;
+  document.querySelectorAll('.mpill').forEach(p => {
+    p.classList.toggle('active', p.dataset.motivo === val);
+  });
+  actualizarUI(val);
+}
+
+function actualizarUI(motivo) {
+  document.getElementById('ratingWrap').style.display = motivo === 'resena' ? 'block' : 'none';
+  document.getElementById('cvZone').style.display     = motivo === 'trabajo' ? 'block' : 'none';
+  const placeholders = {
+    pedido:    'Cuéntanos sobre tu consulta: fecha, cantidad, zona de entrega...',
+    trabajo:   'Cuéntanos sobre ti: experiencia, disponibilidad y por qué te gustaría trabajar con nosotros...',
+    resena:    '¿Cómo fue tu experiencia? ¡Nos encanta escucharte!',
+    sugerencia:'¿Qué mejorarías? ¿Algún sabor nuevo? ¡Toda idea es bienvenida!',
+    otro:      'Escríbenos lo que quieras...',
+  };
+  document.getElementById('mensaje').placeholder = placeholders[motivo] || placeholders.otro;
+}
+
+// ── STARS ──
+document.getElementById('starsRow').addEventListener('click', function(e){
+  const btn = e.target.closest('.star-btn');
+  if(!btn) return;
+  ratingVal = +btn.dataset.val;
+  document.querySelectorAll('.star-btn').forEach((s, i) => s.classList.toggle('lit', i < ratingVal));
+});
+
+// ── CV FILE ──
+document.getElementById('cvFile').addEventListener('change', function(){
+  const nm = document.getElementById('cvFileName');
+  if(this.files[0]){ nm.textContent = '✅ ' + this.files[0].name; nm.style.display = 'block'; }
+});
+const cvZ = document.getElementById('cvZone');
+cvZ.addEventListener('dragover',  e => { e.preventDefault(); cvZ.classList.add('dragover'); });
+cvZ.addEventListener('dragleave', () => cvZ.classList.remove('dragover'));
+cvZ.addEventListener('drop',      () => cvZ.classList.remove('dragover'));
+
+// ── RIPPLE ──
+document.getElementById('btnSubmit').addEventListener('click', function(e){
+  const rect = this.getBoundingClientRect();
+  const rip  = document.createElement('span');
+  rip.className = 'ripple';
+  const sz = Math.max(rect.width, rect.height);
+  rip.style.cssText = `width:${sz}px;height:${sz}px;left:${e.clientX-rect.left-sz/2}px;top:${e.clientY-rect.top-sz/2}px;`;
+  this.appendChild(rip);
+  setTimeout(() => rip.remove(), 700);
+  enviarFormulario();
+});
+
+// ── VALIDATION ──
+function validarCampo(id, check) {
+  const wrap  = document.getElementById('f-' + id);
+  const input = document.getElementById(id);
+  if(!wrap || !input) return true;
+  const ok = check(input.value.trim());
+  wrap.classList.toggle('error', !ok);
+  if(!ok){ input.classList.add('shake'); setTimeout(() => input.classList.remove('shake'), 500); }
+  return ok;
+}
+
+['nombre','email','asunto','mensaje'].forEach(id => {
+  const el = document.getElementById(id);
+  if(el) el.addEventListener('input', () => document.getElementById('f-' + id)?.classList.remove('error'));
+});
+
+// ── TOAST ──
+function toast(msg, icon = '🥟', err = false) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  document.getElementById('toastIcon').textContent = icon;
+  t.style.borderColor = err ? 'rgba(192,57,43,.5)' : 'rgba(200,144,42,.4)';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ── SUBMIT ──
+async function enviarFormulario() {
+  const ok1 = validarCampo('nombre',  v => v.length >= 2);
+  const ok2 = validarCampo('email',   v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v));
+  const ok3 = validarCampo('asunto',  v => v.length >= 3);
+  const ok4 = validarCampo('mensaje', v => v.length >= 10);
+  if(!document.getElementById('privacidad').checked){ toast('Acepta la política de privacidad primero 🔒','🔒',true); return; }
+  if(!ok1||!ok2||!ok3||!ok4) return;
+
+  const btn = document.getElementById('btnSubmit');
+  btn.classList.add('loading'); btn.disabled = true;
+
+  const payload = {
+    nombre:   document.getElementById('nombre').value.trim(),
+    email:    document.getElementById('email').value.trim(),
+    telefono: document.getElementById('telefono').value.trim() || null,
+    motivo:   motivoActual,
+    asunto:   document.getElementById('asunto').value.trim(),
+    mensaje:  document.getElementById('mensaje').value.trim(),
+    rating:   motivoActual === 'resena' ? ratingVal : null,
+  };
+
+  try { await db.from('contactos').insert([payload]); } catch(e) { /* continúa aunque falle */ }
+
+  await new Promise(r => setTimeout(r, 1100));
+  btn.classList.remove('loading'); btn.disabled = false;
+
+  const mensajes = {
+    pedido:    '¡Pronto te contactamos por WhatsApp o correo para coordinar tu pedido! 🥟',
+    trabajo:   '¡Recibimos tu postulación! La revisaremos y te contactaremos si hay una oportunidad 💼',
+    resena:    '¡Gracias por tu reseña! Tu opinión nos ayuda a mejorar cada día ⭐',
+    sugerencia:'¡Gracias por tu sugerencia! La tendremos muy en cuenta 💡',
+    otro:      '¡Mensaje recibido! Te responderemos pronto ✉️',
+  };
+  document.getElementById('successMsg').textContent = mensajes[motivoActual] || mensajes.otro;
+  document.getElementById('contactForm').style.display = 'none';
+  document.getElementById('successScreen').style.display = 'block';
+}
+</script>
+</body>
+</html>

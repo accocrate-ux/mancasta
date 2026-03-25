@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="theme-color" content="#1C0D00"/>
+<meta name="description" content="Empanadas artesanales en Lima. Reserva tu pedido, paga con Yape y recibe delivery."/>
+<title>La Empanada Dorada — Reserva tu pedido</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥟</text></svg>"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --gold:#C8902A;--gold2:#E8B84B;--gold3:#f5d78e;--gold4:rgba(200,144,42,.08);
+  --brown:#160A00;--brown2:#2A1200;--brown3:#3d2008;
+  --cream:#FFF8EC;--c2:rgba(255,248,236,.8);--c3:rgba(255,248,236,.45);--c4:rgba(255,248,236,.2);
+  --red:#C0392B;--green:#16a34a;
+  --r-sm:.5rem;--r-md:.9rem;--r-lg:1.4rem;--r-xl:2rem;--r-2xl:2.8rem;
+  --sg:0 8px 32px rgba(200,144,42,.35);--sg2:0 4px 20px rgba(200,144,42,.2);
+  --sd:0 24px 60px rgba(0,0,0,.55);
+  --ease:.3s cubic-bezier(.4,0,.2,1);
+  --ease-spring:.4s cubic-bezier(.34,1.4,.64,1);
+  --sat:env(safe-area-inset-top,0px);
+  --sab:env(safe-area-inset-bottom,0px);
+  --sal:env(safe-area-inset-left,0px);
+  --sar:env(safe-area-inset-right,0px);
+  --nav-h:68px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+body{font-family:'DM Sans',sans-serif;background:var(--brown);color:var(--cream);overflow-x:hidden;min-height:100vh;}
+img{max-width:100%;height:auto;display:block;}
+button{cursor:pointer;font-family:inherit;}
+a{text-decoration:none;color:inherit;}
+::selection{background:rgba(200,144,42,.3);color:var(--cream);}
+
+/* ═══════════════ LOADER ═══════════════ */
+#loader{position:fixed;inset:0;background:var(--brown);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s ease,visibility .8s ease;}
+#loader.hidden{opacity:0;visibility:hidden;pointer-events:none;}
+.ld-plate{position:relative;width:90px;height:90px;margin-bottom:1.5rem;}
+.ld-em{font-size:3rem;position:absolute;inset:0;display:flex;align-items:center;justify-content:center;animation:ldBounce 1s cubic-bezier(.4,0,.2,1) infinite;}
+.ld-ring{position:absolute;inset:-10px;border-radius:50%;border:2px solid transparent;border-top-color:var(--gold);border-right-color:rgba(200,144,42,.3);animation:spin 1.2s linear infinite;}
+@keyframes ldBounce{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-14px) rotate(5deg)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ld-logo{font-family:'Playfair Display',serif;font-size:clamp(1.3rem,4vw,1.8rem);color:var(--gold);letter-spacing:3px;text-align:center;padding:0 1rem;margin-bottom:1.4rem;}
+.ld-bar{width:140px;height:2px;background:rgba(200,144,42,.15);border-radius:2px;overflow:hidden;}
+.ld-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:2px;animation:ldFill 1.6s ease forwards;}
+@keyframes ldFill{from{width:0}to{width:100%}}
+
+/* ═══════════════ URGENCY BANNER ═══════════════ */
+.urgency-banner{
+  position:relative;z-index:600;
+  background:linear-gradient(90deg,#180900,#2a1200,#180900);
+  border-bottom:1px solid rgba(200,144,42,.15);
+  padding:.45rem 1rem;text-align:center;
+  display:flex;align-items:center;justify-content:center;
+  gap:.6rem;flex-wrap:wrap;overflow:hidden;min-height:36px;
+}
+.urgency-banner::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(200,144,42,.06) 50%,transparent 100%);animation:bannerShine 5s linear infinite;}
+@keyframes bannerShine{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.ub-pill{background:linear-gradient(135deg,var(--red),#e74c3c);color:#fff;font-size:.62rem;font-weight:700;padding:.18rem .6rem;border-radius:2rem;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;animation:urgPulse 2.2s ease infinite;flex-shrink:0;}
+@keyframes urgPulse{0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,.4)}50%{box-shadow:0 0 0 5px rgba(192,57,43,0)}}
+.ub-text{font-size:.75rem;color:var(--c2);}
+.ub-text strong{color:var(--gold2);}
+.ub-divider{color:var(--c4);}
+
+/* ═══════════════ NAV ═══════════════ */
+#nav{position:sticky;top:0;left:0;right:0;z-index:500;padding:1.1rem 3rem;display:flex;justify-content:space-between;align-items:center;transition:all .4s ease;height:var(--nav-h);}
+#nav.scrolled{background:rgba(22,10,0,.96);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);padding:.75rem 3rem;border-bottom:1px solid rgba(200,144,42,.1);box-shadow:0 4px 40px rgba(0,0,0,.35);}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.25rem;color:var(--gold);letter-spacing:1px;display:flex;align-items:center;gap:.5rem;flex-shrink:0;font-style:italic;}
+.logo-spin{animation:spinSlow 12s linear infinite;display:inline-block;font-style:normal;}
+@keyframes spinSlow{to{transform:rotate(360deg)}}
+.nav-links{display:flex;align-items:center;gap:2rem;list-style:none;}
+.nav-links a{color:var(--c3);font-size:.78rem;font-weight:500;letter-spacing:1px;text-transform:uppercase;transition:color var(--ease);position:relative;white-space:nowrap;}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--gold);transition:width var(--ease);}
+.nav-links a:hover{color:var(--gold);}
+.nav-links a:hover::after{width:100%;}
+.nav-reservar{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--brown)!important;border:none;padding:.48rem 1.3rem;border-radius:3rem;font-weight:700!important;font-size:.78rem!important;letter-spacing:.3px!important;transition:transform .2s,box-shadow .2s;display:inline-flex;align-items:center;gap:.4rem;overflow:hidden;-webkit-tap-highlight-color:transparent;}
+.nav-reservar:hover{transform:translateY(-2px);box-shadow:var(--sg);}
+.nav-reservar::after{display:none!important;}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:6px;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+.hamburger span{display:block;width:24px;height:2px;background:var(--cream);border-radius:2px;transition:all .3s ease;}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+.mobile-menu{display:none;position:fixed;inset:0;background:rgba(16,6,0,.98);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);z-index:490;flex-direction:column;align-items:center;justify-content:center;gap:1.8rem;padding:2rem;padding-top:calc(2rem + var(--sat));padding-bottom:calc(2rem + var(--sab));}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-family:'Playfair Display',serif;font-size:clamp(1.9rem,7vw,2.5rem);color:var(--cream);letter-spacing:1px;transition:color .3s,transform .3s;text-align:center;-webkit-tap-highlight-color:transparent;font-style:italic;}
+.mobile-menu a:hover,.mobile-menu a:active{color:var(--gold);transform:translateX(8px);}
+.mobile-close{position:absolute;top:calc(1.5rem + var(--sat));right:1.5rem;background:rgba(255,248,236,.07);border:1px solid rgba(255,248,236,.12);color:var(--cream);width:40px;height:40px;border-radius:50%;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:background .2s;-webkit-tap-highlight-color:transparent;}
+.mobile-close:hover{background:rgba(255,248,236,.14);}
+
+/* ═══════════════ HERO ═══════════════ */
+#hero{min-height:100svh;display:flex;align-items:center;padding-top:var(--nav-h);position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;pointer-events:none;}
+.hero-gradient{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 60% 40%,rgba(200,144,42,.05) 0%,transparent 70%);}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(200,144,42,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(200,144,42,.03) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 70% at 50% 50%,black,transparent);}
+.hero-particles{position:absolute;inset:0;overflow:hidden;}
+.hp{position:absolute;border-radius:50%;background:var(--gold);opacity:0;animation:hpFloat linear infinite;}
+@keyframes hpFloat{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:.3}90%{opacity:.08}100%{transform:translateY(-10vh) scale(1.8);opacity:0}}
+.hero-inner{max-width:1280px;margin:0 auto;padding:3rem 2rem;display:grid;grid-template-columns:55fr 45fr;gap:4rem;align-items:center;width:100%;position:relative;z-index:1;}
+.hero-txt{opacity:0;transform:translateY(40px);animation:fadeUp .9s cubic-bezier(.4,0,.2,1) .3s forwards;}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+.hero-tag{display:inline-flex;align-items:center;gap:.5rem;background:rgba(200,144,42,.1);border:1px solid rgba(200,144,42,.25);color:var(--gold);padding:.35rem 1rem;border-radius:2rem;font-size:.72rem;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:1.5rem;}
+.tag-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:blink 1.8s ease infinite;flex-shrink:0;}
+@keyframes blink{0%,100%{opacity:.3}50%{opacity:1}}
+.hero-txt h1{font-family:'Playfair Display',serif;font-size:clamp(3.2rem,6.5vw,5.5rem);line-height:.92;margin-bottom:1.5rem;letter-spacing:-1px;}
+.hero-txt h1 .ol{-webkit-text-stroke:1.5px var(--gold);color:transparent;}
+.hero-txt h1 .gd{color:var(--gold);}
+.hero-txt h1 .italic{font-style:italic;}
+.hero-desc{color:var(--c2);font-size:1rem;line-height:1.9;max-width:430px;margin-bottom:1.4rem;font-weight:300;}
+.hero-badges{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.6rem;}
+.badge{background:rgba(255,248,236,.04);border:1px solid rgba(255,248,236,.09);padding:.3rem .8rem;border-radius:.8rem;font-size:.76rem;color:var(--c2);white-space:nowrap;font-weight:400;}
+.hero-flow{display:flex;align-items:center;gap:.35rem;margin-bottom:1.8rem;flex-wrap:wrap;}
+.hf-step{display:flex;align-items:center;gap:.3rem;background:rgba(200,144,42,.07);border:1px solid rgba(200,144,42,.15);padding:.26rem .65rem;border-radius:1.5rem;font-size:.69rem;color:var(--c2);white-space:nowrap;}
+.hf-step strong{color:var(--gold2);}
+.hf-arr{color:rgba(200,144,42,.35);font-size:.75rem;}
+.hero-cta{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap;}
+.btn-primary{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--brown);border:none;padding:.9rem 2rem;border-radius:3rem;font-weight:700;font-size:.9rem;transition:transform .25s var(--ease-spring),box-shadow .2s;display:inline-flex;align-items:center;gap:.45rem;position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent;touch-action:manipulation;letter-spacing:.2px;}
+.btn-primary::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.18);opacity:0;transition:opacity .2s;}
+.btn-primary:hover,.btn-primary:active{transform:translateY(-3px) scale(1.02);box-shadow:0 14px 36px rgba(200,144,42,.5);}
+.btn-primary:hover::before{opacity:1;}
+.btn-outline{color:var(--gold);border:1.5px solid rgba(200,144,42,.35);padding:.85rem 1.7rem;border-radius:3rem;font-size:.88rem;background:transparent;transition:all var(--ease);display:inline-flex;align-items:center;-webkit-tap-highlight-color:transparent;touch-action:manipulation;font-weight:500;}
+.btn-outline:hover,.btn-outline:active{background:rgba(200,144,42,.08);border-color:rgba(200,144,42,.6);}
+.hero-vis{position:relative;opacity:0;transform:scale(.9) translateY(20px);animation:scaleIn 1s cubic-bezier(.34,1.3,.64,1) .6s forwards;display:flex;align-items:center;justify-content:center;}
+@keyframes scaleIn{to{opacity:1;transform:scale(1) translateY(0)}}
+.hero-img-frame{position:relative;width:min(420px,90vw);}
+.hero-img-wrap{width:100%;aspect-ratio:4/5;border-radius:2rem;overflow:hidden;border:1px solid rgba(200,144,42,.2);box-shadow:0 0 80px rgba(200,144,42,.1),var(--sd);position:relative;}
+.hero-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform 8s ease;}
+.hero-img-wrap:hover img{transform:scale(1.04);}
+.hero-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(22,10,0,.6) 0%,transparent 50%);}
+.ring-outer{position:absolute;inset:-24px;border-radius:2.6rem;border:1px solid rgba(200,144,42,.1);animation:morphRing 8s ease-in-out infinite;pointer-events:none;}
+@keyframes morphRing{0%,100%{border-radius:2.6rem}50%{border-radius:3.5rem}}
+.ring-inner{position:absolute;inset:-12px;border-radius:2.3rem;border:1px dashed rgba(200,144,42,.07);pointer-events:none;}
+.float-badge{position:absolute;background:rgba(22,10,0,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(200,144,42,.22);border-radius:1rem;padding:.7rem 1rem;font-size:.75rem;color:var(--cream);white-space:nowrap;pointer-events:none;}
+.float-badge strong{color:var(--gold);display:block;font-size:.88rem;font-weight:600;}
+.fb1{top:8%;left:-16%;animation:floatA 4.5s ease-in-out infinite;}
+.fb2{bottom:12%;right:-15%;animation:floatB 5.5s ease-in-out infinite;}
+.fb3{top:48%;right:-14%;animation:floatA 4s ease-in-out infinite .8s;}
+@keyframes floatA{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes floatB{0%,100%{transform:translateY(0)}50%{transform:translateY(12px)}}
+.mobile-float-badges{display:none;flex-wrap:wrap;gap:.4rem;justify-content:center;margin-top:1rem;}
+.mfb{background:rgba(22,10,0,.85);border:1px solid rgba(200,144,42,.22);border-radius:.7rem;padding:.35rem .75rem;font-size:.74rem;color:var(--cream);display:flex;align-items:center;gap:.35rem;}
+.mfb strong{color:var(--gold);}
+.scroll-ind{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.45rem;color:var(--c3);font-size:.66rem;letter-spacing:2px;text-transform:uppercase;animation:fadeUp 1s ease 3s both;pointer-events:none;}
+.sc-mouse{width:20px;height:32px;border:1.5px solid rgba(200,144,42,.3);border-radius:10px;position:relative;}
+.sc-wheel{width:3px;height:6px;background:var(--gold);border-radius:2px;position:absolute;top:5px;left:50%;transform:translateX(-50%);animation:scw 2.2s ease infinite;}
+@keyframes scw{0%{opacity:1;transform:translateX(-50%) translateY(0)}100%{opacity:0;transform:translateX(-50%) translateY(12px)}}
+
+/* ═══════════════ SHARED ═══════════════ */
+section{position:relative;}
+.s-wrap{max-width:1280px;margin:0 auto;padding:0 2rem;}
+.s-title{text-align:center;margin-bottom:3.5rem;}
+.s-label{display:inline-flex;align-items:center;gap:.5rem;color:var(--gold);font-size:.68rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;margin-bottom:.9rem;}
+.s-label::before,.s-label::after{content:'';width:20px;height:1px;background:var(--gold);opacity:.45;}
+.s-title h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.4rem);color:var(--cream);line-height:1.05;letter-spacing:-0.5px;}
+.s-title h2 em{color:var(--gold);font-style:italic;}
+.s-title p{color:var(--c3);margin-top:.7rem;font-size:.95rem;font-weight:300;}
+.rv{opacity:0;transform:translateY(35px);transition:opacity .7s ease,transform .7s ease;}
+.rv.in{opacity:1;transform:translateY(0);}
+.rl{opacity:0;transform:translateX(-30px);transition:opacity .7s ease,transform .7s ease;}
+.rl.in{opacity:1;transform:translateX(0);}
+.rr{opacity:0;transform:translateX(30px);transition:opacity .7s ease,transform .7s ease;}
+.rr.in{opacity:1;transform:translateX(0);}
+
+/* ═══════════════ EMPANADAS SECTION ═══════════════ */
+#empanadas{padding:7rem 0;background:linear-gradient(180deg,#160A00 0%,#200E00 100%);overflow:hidden;}
+.emp-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;max-width:1000px;margin:0 auto;}
+.emp-card{position:relative;border-radius:2rem;overflow:hidden;border:1px solid rgba(200,144,42,.15);background:rgba(255,248,236,.02);transition:all .45s cubic-bezier(.34,1.2,.64,1);cursor:pointer;}
+.emp-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(200,144,42,.06) 0%,transparent 70%);opacity:0;transition:opacity .4s;z-index:1;}
+.emp-card:hover{transform:translateY(-10px) scale(1.01);border-color:rgba(200,144,42,.4);box-shadow:0 30px 70px rgba(0,0,0,.5),0 0 0 1px rgba(200,144,42,.1);}
+.emp-card:hover::before{opacity:1;}
+.emp-img-area{width:100%;aspect-ratio:4/3;position:relative;overflow:hidden;background:linear-gradient(135deg,#2a1400,#1a0c00);display:flex;align-items:center;justify-content:center;}
+.emp-img-area img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.4,0,.2,1);}
+.emp-card:hover .emp-img-area img{transform:scale(1.07);}
+.emp-img-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;z-index:2;transition:opacity .3s;}
+.emp-img-placeholder .ph-em{font-size:3.5rem;filter:drop-shadow(0 4px 16px rgba(200,144,42,.4));}
+.emp-img-placeholder .ph-txt{font-size:.75rem;color:var(--c3);letter-spacing:1.5px;text-transform:uppercase;}
+.emp-img-shine{position:absolute;inset:0;background:linear-gradient(135deg,transparent 40%,rgba(200,144,42,.06) 60%,transparent 80%);z-index:4;pointer-events:none;opacity:0;transition:opacity .3s;}
+.emp-card:hover .emp-img-shine{opacity:1;}
+.emp-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(22,10,0,.85) 0%,rgba(22,10,0,.3) 45%,transparent 70%);z-index:5;}
+.emp-content{padding:1.8rem 2rem 2rem;position:relative;z-index:2;}
+.emp-type-badge{display:inline-flex;align-items:center;gap:.35rem;background:rgba(200,144,42,.12);border:1px solid rgba(200,144,42,.25);color:var(--gold);padding:.22rem .7rem;border-radius:1.5rem;font-size:.65rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:.9rem;}
+.emp-title{font-family:'Playfair Display',serif;font-size:1.9rem;color:var(--cream);margin-bottom:.5rem;font-style:italic;line-height:1.1;}
+.emp-desc{color:var(--c2);font-size:.87rem;line-height:1.8;margin-bottom:1.3rem;font-weight:300;}
+.emp-details{display:flex;flex-direction:column;gap:.55rem;margin-bottom:1.4rem;}
+.emp-detail{display:flex;align-items:center;gap:.6rem;font-size:.82rem;color:var(--c3);}
+.emp-detail .ed-icon{width:28px;height:28px;background:rgba(200,144,42,.1);border-radius:.5rem;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;}
+.emp-price-row{display:flex;align-items:center;justify-content:space-between;padding-top:1rem;border-top:1px solid rgba(255,248,236,.07);}
+.emp-price{font-family:'Playfair Display',serif;font-size:2.4rem;color:var(--gold);font-weight:700;line-height:1;}
+.emp-per{font-size:.72rem;color:var(--c3);margin-top:.1rem;}
+.emp-cta-mini{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--brown);border:none;padding:.55rem 1.3rem;border-radius:2rem;font-size:.8rem;font-weight:700;transition:transform .2s,box-shadow .2s;-webkit-tap-highlight-color:transparent;}
+.emp-cta-mini:hover{transform:translateY(-2px) scale(1.04);box-shadow:var(--sg);}
+
+/* ═══════════════ OFFERS ═══════════════ */
+#ofertas{padding:7rem 0;background:#160A00;}
+.offers-header{text-align:center;margin-bottom:3.5rem;}
+.offers-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;}
+.oc{background:rgba(255,248,236,.025);border:1.5px solid rgba(200,144,42,.1);border-radius:1.8rem;padding:1.6rem 1rem 1.4rem;text-align:center;position:relative;overflow:hidden;transition:all .4s cubic-bezier(.34,1.2,.64,1);-webkit-tap-highlight-color:transparent;}
+.oc::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(200,144,42,.07) 0%,transparent 65%);opacity:0;transition:opacity .35s;}
+.oc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);transform:scaleX(0);transition:transform .4s;}
+.oc:hover::before,.oc.featured::before{opacity:1;}
+.oc:hover::after,.oc.featured::after{transform:scaleX(1);}
+.oc:hover{transform:translateY(-10px);border-color:rgba(200,144,42,.5);box-shadow:0 24px 55px rgba(0,0,0,.5);}
+.oc.featured{border-color:rgba(200,144,42,.38);background:rgba(200,144,42,.07);}
+.oc-best{position:absolute;top:0;right:0;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--brown);font-size:.55rem;font-weight:800;padding:.22rem .65rem;border-radius:0 1.8rem 0 .9rem;letter-spacing:.8px;text-transform:uppercase;z-index:1;}
+.oc-em{font-size:2.4rem;display:block;margin-bottom:.7rem;filter:drop-shadow(0 4px 12px rgba(200,144,42,.35));position:relative;z-index:1;transition:transform .35s var(--ease-spring);}
+.oc:hover .oc-em{transform:scale(1.2) rotate(-6deg);}
+.oc h3{font-family:'Playfair Display',serif;font-size:1.35rem;color:var(--gold);margin-bottom:.1rem;position:relative;z-index:1;}
+.oc-tag{font-size:.62rem;color:var(--c3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:.5rem;position:relative;z-index:1;font-weight:500;}
+.oc p{font-size:.79rem;color:var(--c3);line-height:1.65;margin-bottom:.7rem;position:relative;z-index:1;}
+.oc-old{font-size:.76rem;color:rgba(255,248,236,.2);text-decoration:line-through;margin-bottom:.1rem;position:relative;z-index:1;}
+.oc-price{font-family:'Playfair Display',serif;font-size:2.1rem;color:var(--gold);font-weight:700;line-height:1;position:relative;z-index:1;}
+.oc-save{display:inline-block;background:rgba(22,163,74,.22);border:1px solid rgba(22,163,74,.35);color:#4ade80;font-size:.6rem;font-weight:700;padding:.12rem .5rem;border-radius:1rem;margin:.28rem 0 .1rem;position:relative;z-index:1;}
+.oc-per{font-size:.67rem;color:var(--c3);position:relative;z-index:1;}
+.oc-btn{margin-top:1.1rem;background:transparent;border:1.5px solid rgba(200,144,42,.32);color:var(--gold);padding:.6rem;border-radius:2rem;font-size:.8rem;font-weight:700;width:100%;transition:all .28s;position:relative;overflow:hidden;z-index:1;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+.oc-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--gold),var(--gold2));opacity:0;transition:opacity .28s;}
+.oc-btn:hover,.oc-btn:active{color:var(--brown);border-color:transparent;}
+.oc-btn:hover::before,.oc-btn:active::before{opacity:1;}
+.oc-btn span{position:relative;z-index:1;}
+.oc.sel-pack{border-color:var(--gold);background:rgba(200,144,42,.1);}
+.oc.sel-pack .oc-btn{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--brown);border-color:transparent;}
+.oc.sel-pack .oc-btn::before{opacity:1;}
+
+/* ═══════════════ COMO FUNCIONA ═══════════════ */
+#como{padding:6rem 0;background:rgba(200,144,42,.02);border-top:1px solid rgba(200,144,42,.07);border-bottom:1px solid rgba(200,144,42,.07);}
+.como-inner{max-width:1100px;margin:0 auto;padding:0 2rem;}
+.como-label{text-align:center;font-size:.68rem;color:var(--gold);font-weight:600;letter-spacing:3px;text-transform:uppercase;margin-bottom:.7rem;display:flex;align-items:center;justify-content:center;gap:.5rem;}
+.como-label::before,.como-label::after{content:'';width:24px;height:1px;background:var(--gold);opacity:.45;}
+.como-title{font-family:'Playfair Display',serif;font-size:clamp(1.7rem,4vw,2.4rem);color:var(--cream);text-align:center;margin-bottom:.45rem;letter-spacing:-.3px;}
+.como-title em{color:var(--gold);font-style:italic;}
+.como-sub{text-align:center;color:var(--c3);font-size:.88rem;margin-bottom:3rem;font-weight:300;}
+.como-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;position:relative;}
+.como-steps::before{content:'';position:absolute;top:29px;left:12.5%;right:12.5%;height:1px;background:linear-gradient(90deg,transparent,rgba(200,144,42,.25),rgba(200,144,42,.25),transparent);}
+.cs{text-align:center;padding:1.5rem .8rem;position:relative;z-index:1;}
+.cs-num{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--brown);font-size:1.3rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto .95rem;box-shadow:var(--sg);transition:transform .35s var(--ease-spring);}
+.cs:hover .cs-num{transform:scale(1.15) rotate(-10deg);}
+.cs h4{font-weight:600;font-size:.92rem;color:var(--cream);margin-bottom:.4rem;}
+.cs p{font-size:.82rem;color:var(--c3);line-height:1.7;font-weight:300;}
+.cs-highlight{background:rgba(200,144,42,.05);border:1px solid rgba(200,144,42,.13);border-radius:1.4rem;}
+
+/* ═══════════════ STATS ═══════════════ */
+#stats{padding:3rem 2rem;background:rgba(200,144,42,.03);border-bottom:1px solid rgba(200,144,42,.07);}
+.stats-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;text-align:center;}
+.stat-num{font-family:'Playfair Display',serif;font-size:clamp(2.4rem,5vw,3.4rem);color:var(--gold);line-height:1;}
+.stat-lbl{font-size:.7rem;color:var(--c3);letter-spacing:1.5px;text-transform:uppercase;margin-top:.35rem;font-weight:500;}
+.stats-cred{text-align:center;margin-top:1rem;font-size:.7rem;color:rgba(255,248,236,.18);}
+
+/* ═══════════════ NOSOTROS ═══════════════ */
+#nosotros{padding:7rem 0;background:linear-gradient(180deg,#130800 0%,#1a0a00 100%);}
+.nos-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;}
+.nos-img-wrap{position:relative;border-radius:2rem;overflow:hidden;height:440px;border:1px solid rgba(200,144,42,.18);box-shadow:var(--sd);}
+.nos-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform 9s ease;}
+.nos-img-wrap:hover img{transform:scale(1.04);}
+.nos-img-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(200,144,42,.08) 0%,transparent 60%);pointer-events:none;}
+.nos-stat-pill{position:absolute;bottom:1.5rem;left:1.5rem;background:rgba(22,10,0,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(200,144,42,.28);border-radius:1rem;padding:.85rem 1.2rem;display:flex;align-items:center;gap:.8rem;}
+.nsp-num{font-family:'Playfair Display',serif;font-size:2rem;color:var(--gold);line-height:1;}
+.nsp-lbl{font-size:.68rem;color:var(--c3);line-height:1.5;font-weight:400;}
+.nos-txt .s-label{justify-content:flex-start;}
+.nos-txt h2{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,2.9rem);color:var(--cream);line-height:1.1;margin-bottom:1.1rem;letter-spacing:-.3px;}
+.nos-txt h2 em{color:var(--gold);font-style:italic;}
+.nos-txt p{color:var(--c2);font-size:.97rem;line-height:1.95;margin-bottom:.9rem;font-weight:300;}
+.nos-pillars{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:1.5rem;}
+.nos-pillar{background:rgba(255,248,236,.02);border:1px solid rgba(200,144,42,.09);border-radius:1.2rem;padding:1rem 1.1rem;transition:all var(--ease);}
+.nos-pillar:hover{border-color:rgba(200,144,42,.28);background:rgba(200,144,42,.04);transform:translateY(-3px);}
+.nos-pillar-em{font-size:1.3rem;display:block;margin-bottom:.3rem;}
+.nos-pillar-title{font-weight:600;font-size:.88rem;color:var(--cream);margin-bottom:.12rem;}
+.nos-pillar-desc{font-size:.76rem;color:var(--c3);line-height:1.6;font-weight:300;}
+
+/* ═══════════════ RESERVA INFO ═══════════════ */
+#reserva-info{padding:5rem 0;background:linear-gradient(135deg,#1a0a00,#2a1100);}
+.ri-inner{max-width:1100px;margin:0 auto;padding:0 2rem;}
+.ri-title{font-family:'Playfair Display',serif;font-size:clamp(1.7rem,4vw,2.3rem);color:var(--cream);text-align:center;margin-bottom:.5rem;letter-spacing:-.3px;}
+.ri-title em{color:var(--gold);font-style:italic;}
+.ri-sub{text-align:center;color:var(--c3);font-size:.88rem;margin-bottom:2.5rem;font-weight:300;}
+.ri-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;}
+.ric{background:rgba(255,248,236,.02);border:1.5px solid rgba(200,144,42,.1);border-radius:1.6rem;padding:1.6rem 1.4rem;transition:all var(--ease);}
+.ric:hover{border-color:rgba(200,144,42,.32);transform:translateY(-5px);box-shadow:0 16px 44px rgba(0,0,0,.3);}
+.ric-em{font-size:1.9rem;display:block;margin-bottom:.75rem;}
+.ric h4{font-weight:600;font-size:.97rem;color:var(--cream);margin-bottom:.4rem;}
+.ric p{font-size:.83rem;color:var(--c3);line-height:1.75;font-weight:300;}
+.ric-warn{background:rgba(200,144,42,.06);border-color:rgba(200,144,42,.22);}
+.ric-warn h4{color:var(--gold);}
+
+/* ═══════════════ DELIVERY ═══════════════ */
+#delivery{padding:7rem 0;background:#130800;}
+.di-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+.di-left h3{font-family:'Playfair Display',serif;font-size:clamp(1.7rem,3.5vw,2.2rem);color:var(--cream);margin-bottom:.5rem;letter-spacing:-.2px;}
+.di-left p{color:var(--c3);font-size:.9rem;line-height:1.85;margin-bottom:1.3rem;font-weight:300;}
+.zone-bands{display:flex;flex-direction:column;gap:.4rem;}
+.zband{display:flex;align-items:flex-start;gap:.8rem;background:rgba(255,248,236,.02);border:1px solid rgba(200,144,42,.07);border-radius:.7rem;padding:.65rem .9rem;transition:all .22s;}
+.zband:hover{border-color:rgba(200,144,42,.25);background:rgba(200,144,42,.04);transform:translateX(4px);}
+.zband-cost{min-width:50px;text-align:center;background:rgba(200,144,42,.11);border:1px solid rgba(200,144,42,.22);border-radius:.5rem;padding:.2rem .3rem;font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--gold);white-space:nowrap;flex-shrink:0;}
+.zband-list{font-size:.82rem;color:var(--c2);line-height:1.8;padding-top:.06rem;font-weight:300;}
+.di-right{display:flex;flex-direction:column;gap:1.3rem;}
+.di-map-static{border-radius:1.6rem;overflow:hidden;height:270px;border:1px solid rgba(200,144,42,.16);position:relative;background:linear-gradient(135deg,#1a0a00,#2e1300);display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;}
+.di-map-static:hover .map-overlay{opacity:1;}
+.map-overlay{position:absolute;inset:0;background:rgba(22,10,0,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7rem;opacity:.88;transition:opacity .3s;}
+.map-pin{font-size:2.5rem;}
+.map-cta{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--brown);font-size:.78rem;font-weight:700;padding:.45rem 1.3rem;border-radius:2rem;}
+.di-info{background:rgba(200,144,42,.05);border:1px solid rgba(200,144,42,.13);border-radius:1.2rem;padding:1.3rem;font-size:.87rem;color:var(--c3);line-height:1.9;font-weight:300;}
+.di-info strong{color:var(--gold);display:block;margin-bottom:.45rem;font-weight:600;}
+
+/* ═══════════════ CONTACTO ═══════════════ */
+#contacto{padding:7rem 0;background:linear-gradient(180deg,#160A00 0%,var(--brown) 100%);}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem;align-items:start;}
+.cc-list{display:flex;flex-direction:column;gap:.85rem;}
+.cc{background:rgba(255,248,236,.02);border:1px solid rgba(200,144,42,.09);border-radius:1.2rem;padding:1.2rem 1.4rem;display:flex;align-items:center;gap:1rem;transition:all .25s;}
+.cc:hover{background:rgba(200,144,42,.05);border-color:rgba(200,144,42,.25);transform:translateX(5px);}
+.cc-icon{width:46px;height:46px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;box-shadow:var(--sg2);}
+.cc h4{font-weight:600;color:var(--cream);font-size:.88rem;margin-bottom:.1rem;}
+.cc a,.cc p{color:var(--c2);font-size:.9rem;transition:color .2s;font-weight:300;}
+.cc a:hover{color:var(--gold);}
+.cta-box{background:rgba(200,144,42,.04);border:1px solid rgba(200,144,42,.14);border-radius:2rem;padding:2.5rem;text-align:center;}
+.cta-box h3{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3.5vw,2.4rem);color:var(--cream);margin-bottom:.7rem;letter-spacing:-.3px;}
+.cta-box p{color:var(--c3);margin-bottom:1.7rem;line-height:1.9;font-size:.93rem;font-weight:300;}
+.wa-btn{display:inline-flex;align-items:center;gap:.65rem;background:linear-gradient(135deg,#25D366,#1da851);color:#fff;padding:.9rem 2rem;border-radius:3rem;font-weight:700;font-size:.92rem;transition:transform .25s var(--ease-spring),box-shadow .2s;-webkit-tap-highlight-color:transparent;}
+.wa-btn:hover,.wa-btn:active{transform:translateY(-3px) scale(1.02);box-shadow:0 14px 36px rgba(37,211,102,.38);}
+.reserve-note{margin-top:1.1rem;background:rgba(200,144,42,.06);border:1px solid rgba(200,144,42,.16);border-radius:1rem;padding:1rem;font-size:.84rem;color:var(--c2);line-height:1.8;font-weight:300;}
+.reserve-note strong{color:var(--gold);font-weight:600;}
+
+/* ═══════════════ PROMO POPUP ═══════════════ */
+#promoPopup{position:fixed;bottom:6rem;right:1.5rem;z-index:450;opacity:0;transform:translateY(20px) scale(.9);pointer-events:none;transition:opacity .45s cubic-bezier(.34,1.3,.64,1),transform .45s cubic-bezier(.34,1.3,.64,1);max-width:265px;width:calc(100vw - 3rem);}
+#promoPopup.show{opacity:1;transform:translateY(0) scale(1);pointer-events:all;}
+.promo-inner{background:linear-gradient(145deg,#2a1300,#1a0900);border:1.5px solid rgba(200,144,42,.38);border-radius:1.6rem;padding:1.1rem 1.3rem;box-shadow:0 20px 55px rgba(0,0,0,.6);position:relative;}
+.promo-close{position:absolute;top:.5rem;right:.6rem;background:rgba(255,248,236,.07);border:none;color:var(--c3);width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;transition:all .2s;-webkit-tap-highlight-color:transparent;}
+.promo-close:hover{color:var(--gold);background:rgba(200,144,42,.1);}
+.promo-badge{display:inline-flex;align-items:center;gap:.35rem;background:rgba(200,144,42,.14);border:1px solid rgba(200,144,42,.28);color:var(--gold);font-size:.6rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:.2rem .65rem;border-radius:1.5rem;margin-bottom:.55rem;}
+.promo-badge-dot{width:5px;height:5px;background:var(--gold);border-radius:50%;animation:blink 1.5s infinite;flex-shrink:0;}
+.promo-em{font-size:1.8rem;display:block;margin-bottom:.3rem;}
+.promo-title{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--gold);margin-bottom:.22rem;}
+.promo-desc{font-size:.77rem;color:var(--c2);line-height:1.55;margin-bottom:.7rem;font-weight:300;}
+.promo-price{display:flex;align-items:baseline;gap:.4rem;margin-bottom:.7rem;flex-wrap:wrap;}
+.promo-old{font-size:.78rem;color:rgba(255,248,236,.22);text-decoration:line-through;}
+.promo-new{font-family:'Playfair Display',serif;font-size:1.6rem;color:var(--gold);font-weight:700;}
+.promo-save{background:rgba(22,163,74,.18);border:1px solid rgba(22,163,74,.32);color:#4ade80;font-size:.6rem;font-weight:700;padding:.1rem .42rem;border-radius:.7rem;}
+.promo-btn{display:block;width:100%;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--brown);border:none;padding:.6rem;border-radius:2rem;font-size:.82rem;font-weight:700;text-align:center;transition:transform .2s,box-shadow .2s;-webkit-tap-highlight-color:transparent;}
+.promo-btn:hover{transform:translateY(-2px);box-shadow:var(--sg);}
+
+/* ═══════════════ FOOTER ═══════════════ */
+footer{background:var(--brown);border-top:1px solid rgba(200,144,42,.09);padding:2.5rem 2rem;padding-bottom:calc(2.5rem + var(--sab));}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.2rem;}
+.ft-logo{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--gold);font-style:italic;}
+.footer-links{display:flex;align-items:center;gap:1.3rem;flex-wrap:wrap;}
+.footer-links a{color:var(--c3);font-size:.8rem;transition:color .2s;display:flex;align-items:center;gap:.4rem;font-weight:400;}
+.footer-links a:hover{color:var(--gold);}
+footer p{color:var(--c3);font-size:.8rem;font-weight:300;}
+
+/* ═══════════════ LEGAL FOOTER ═══════════════ */
+.legal-footer{
+  background:#0e0500;
+  border-top:1px solid rgba(200,144,42,.07);
+  padding:1.6rem 2rem;
+  padding-bottom:calc(1.6rem + var(--sab));
+}
+.legal-footer-inner{
+  max-width:1100px;margin:0 auto;
+  display:flex;flex-direction:column;gap:1rem;align-items:center;
+}
+.legal-links-row{
+  display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;justify-content:center;
+}
+.ll-sep{color:rgba(200,144,42,.2);font-size:.8rem;}
+.legal-links-row a{
+  color:var(--c3);font-size:.76rem;transition:color .2s;
+  display:inline-flex;align-items:center;gap:.3rem;
+  padding:.22rem .5rem;border-radius:.5rem;
+  transition:all .2s;
+}
+.legal-links-row a:hover{color:var(--gold);background:rgba(200,144,42,.06);}
+.legal-copy{
+  text-align:center;color:rgba(255,248,236,.18);font-size:.7rem;line-height:1.7;
+}
+.legal-copy strong{color:rgba(255,248,236,.28);}
+.lf-badge{
+  display:inline-flex;align-items:center;gap:.4rem;
+  background:rgba(200,144,42,.05);border:1px solid rgba(200,144,42,.1);
+  border-radius:2rem;padding:.28rem .85rem;
+  font-size:.67rem;color:var(--c3);
+}
+.lf-badge span{color:var(--gold);font-weight:600;}
+
+/* ═══════════════ FLOAT CART ═══════════════ */
+.float-cart{position:fixed;bottom:calc(1.5rem + var(--sab));right:1.5rem;z-index:300;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--brown);width:58px;height:58px;border-radius:50%;border:none;box-shadow:var(--sg);display:flex;align-items:center;justify-content:center;font-size:1.3rem;transition:transform .35s var(--ease-spring),box-shadow .2s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+.float-cart:hover,.float-cart:active{transform:scale(1.14);box-shadow:0 16px 44px rgba(200,144,42,.65);}
+.cart-count{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;width:22px;height:22px;border-radius:50%;font-size:.67rem;font-weight:800;display:none;align-items:center;justify-content:center;border:2px solid var(--brown);animation:countPop .3s var(--ease-spring);}
+@keyframes countPop{from{transform:scale(0)}to{transform:scale(1)}}
+
+/* ═══════════════ TOAST ═══════════════ */
+.toast{position:fixed;bottom:calc(5.5rem + var(--sab));right:1.5rem;background:rgba(22,10,0,.96);border:1px solid rgba(200,144,42,.28);color:var(--cream);padding:.85rem 1.3rem;border-radius:1rem;font-size:.84rem;z-index:700;opacity:0;transform:translateY(12px);transition:all .35s cubic-bezier(.34,1.3,.64,1);pointer-events:none;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);max-width:min(280px,calc(100vw - 3rem));box-shadow:0 10px 30px rgba(0,0,0,.4);}
+.toast.on{opacity:1;transform:translateY(0);}
+
+/* ═══════════════ CHATBOT ═══════════════ */
+.chat-fab{position:fixed;bottom:calc(1.5rem + var(--sab));left:1.5rem;z-index:300;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#1a7a3c,#25a05a);border:none;box-shadow:0 8px 28px rgba(26,122,60,.45);display:flex;align-items:center;justify-content:center;font-size:1.35rem;transition:transform .2s,box-shadow .2s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+.chat-fab:hover,.chat-fab:active{transform:scale(1.08);box-shadow:0 12px 38px rgba(26,122,60,.6);}
+.n-dot{position:absolute;top:-2px;right:-2px;width:12px;height:12px;background:#ef4444;border-radius:50%;border:2px solid var(--brown);animation:pulse 2.2s ease infinite;}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+.chat-win{position:fixed;bottom:calc(5.5rem + var(--sab));left:1.5rem;width:min(330px,calc(100vw - 3rem));background:var(--brown2);border:1px solid rgba(200,144,42,.16);border-radius:1.6rem;z-index:301;overflow:hidden;box-shadow:0 25px 65px rgba(0,0,0,.5);transform:scale(.88) translateY(18px);opacity:0;pointer-events:none;transition:all .35s cubic-bezier(.34,1.3,.64,1);max-height:calc(100svh - 12rem);display:flex;flex-direction:column;}
+.chat-win.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all;}
+.cw-header{background:linear-gradient(135deg,#1a7a3c,#25a05a);padding:1rem 1.2rem;display:flex;align-items:center;gap:.75rem;flex-shrink:0;}
+.bot-avatar{width:34px;height:34px;background:rgba(255,255,255,.18);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.bot-info h4{color:#fff;font-size:.88rem;font-weight:600;}
+.bot-info p{color:rgba(255,255,255,.65);font-size:.7rem;display:flex;align-items:center;gap:.3rem;}
+.bot-online{width:6px;height:6px;background:#86efac;border-radius:50%;display:inline-block;flex-shrink:0;}
+.cw-close{margin-left:auto;background:rgba(255,255,255,.14);border:none;color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;transition:background .2s;flex-shrink:0;-webkit-tap-highlight-color:transparent;}
+.cw-close:hover{background:rgba(255,255,255,.24);}
+.api-notice{padding:.5rem 1rem;background:rgba(200,144,42,.07);border-bottom:1px solid rgba(200,144,42,.09);font-size:.66rem;color:var(--c3);text-align:center;display:none;flex-shrink:0;}
+.cw-msgs{flex:1;overflow-y:auto;padding:.95rem 1rem;display:flex;flex-direction:column;gap:.65rem;min-height:180px;-webkit-overflow-scrolling:touch;}
+.cw-msgs::-webkit-scrollbar{width:3px;}
+.cw-msgs::-webkit-scrollbar-thumb{background:rgba(200,144,42,.18);border-radius:2px;}
+.chat-msg{max-width:88%;padding:.6rem .9rem;border-radius:1rem;font-size:.81rem;line-height:1.55;animation:msgPop .22s ease;word-break:break-word;}
+@keyframes msgPop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.chat-msg.bot{background:rgba(255,248,236,.05);border:1px solid rgba(200,144,42,.09);color:var(--c2);align-self:flex-start;border-bottom-left-radius:.25rem;}
+.chat-msg.user{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--brown);align-self:flex-end;font-weight:500;border-bottom-right-radius:.25rem;}
+.typing-dots{display:flex;gap:4px;align-items:center;padding:.7rem .9rem;}
+.typing-dot{width:6px;height:6px;background:var(--c3);border-radius:50%;animation:td 1.2s ease infinite;}
+.typing-dot:nth-child(2){animation-delay:.18s;}
+.typing-dot:nth-child(3){animation-delay:.36s;}
+@keyframes td{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-7px)}}
+.cw-quick{padding:.4rem .75rem;display:flex;flex-wrap:wrap;gap:.38rem;flex-shrink:0;}
+.quick-btn{background:rgba(200,144,42,.09);border:1px solid rgba(200,144,42,.18);color:var(--gold);padding:.28rem .65rem;border-radius:1.2rem;font-size:.7rem;transition:all .2s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;font-weight:500;}
+.quick-btn:hover,.quick-btn:active{background:rgba(200,144,42,.2);}
+.cw-input-row{padding:.65rem .75rem;border-top:1px solid rgba(255,248,236,.05);display:flex;gap:.45rem;flex-shrink:0;}
+.chat-inp{flex:1;background:rgba(255,248,236,.05);border:1px solid rgba(255,248,236,.09);border-radius:2rem;padding:.48rem .85rem;color:var(--cream);font-size:.8rem;outline:none;font-family:'DM Sans',sans-serif;transition:border-color .2s;min-width:0;}
+.chat-inp:focus{border-color:rgba(200,144,42,.32);}
+.chat-inp::placeholder{color:var(--c3);}
+.chat-send{background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;color:var(--brown);width:34px;height:34px;border-radius:50%;font-size:.88rem;display:flex;align-items:center;justify-content:center;transition:transform .18s var(--ease-spring);flex-shrink:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+.chat-send:hover,.chat-send:active{transform:scale(1.1);}
+
+/* ═══════════════ TABLET ═══════════════ */
+@media(max-width:1100px){
+  .offers-grid{grid-template-columns:repeat(3,1fr);}
+  .nos-grid{gap:2.5rem;}
+  .ri-cards{grid-template-columns:1fr 1fr;}
+  .di-grid{grid-template-columns:1fr;}
+  #nav{padding:1rem 2rem;}
+  #nav.scrolled{padding:.75rem 2rem;}
+  .emp-grid{max-width:800px;}
+}
+
+/* ═══════════════ MOBILE 768px ═══════════════ */
+@media(max-width:768px){
+  #nav{padding:.85rem 1.2rem;}
+  #nav.scrolled{padding:.7rem 1.2rem;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  #hero{padding-top:60px;min-height:100svh;}
+  .hero-inner{grid-template-columns:1fr;padding:2rem 1.2rem 3.5rem;text-align:center;gap:1.8rem;}
+  .hero-txt{order:1;}
+  .hero-vis{order:2;}
+  .hero-txt h1{font-size:clamp(2.6rem,10vw,3.5rem);}
+  .hero-desc{text-align:left;font-size:.93rem;max-width:100%;}
+  .hero-badges{justify-content:center;}
+  .hero-flow{justify-content:center;}
+  .hero-cta{justify-content:center;}
+  .hero-img-frame{width:min(320px,80vw);}
+  .float-badge{display:none;}
+  .mobile-float-badges{display:flex;}
+  .ring-outer,.ring-inner{display:none;}
+  .scroll-ind{display:none;}
+  #como{padding:4rem 0;}
+  .como-inner{padding:0 1.2rem;}
+  .como-steps{grid-template-columns:1fr 1fr;gap:1rem;}
+  .como-steps::before{display:none;}
+  .cs{padding:1.2rem .65rem;}
+  .cs-num{width:48px;height:48px;font-size:1.1rem;}
+  #stats{padding:2.5rem 1.2rem;}
+  .stats-inner{grid-template-columns:1fr 1fr;gap:1.2rem;}
+  .stat-num{font-size:2.2rem;}
+  .s-wrap,.como-inner,.ri-inner{padding:0 1.2rem;}
+  #nosotros,#delivery,#ofertas,#contacto,#reserva-info,#empanadas{padding:4.5rem 0;}
+  .nos-grid{grid-template-columns:1fr;gap:2rem;}
+  .nos-img-wrap{height:240px;border-radius:1.5rem;}
+  .nos-pillars{grid-template-columns:1fr 1fr;}
+  .ri-cards{grid-template-columns:1fr;gap:1rem;}
+  .di-map-static{height:190px;}
+  .offers-grid{grid-template-columns:1fr 1fr;gap:.8rem;}
+  .offers-grid>.oc:last-child:nth-child(odd){grid-column:1/-1;max-width:200px;margin:0 auto;}
+  .oc{padding:1.2rem .85rem 1.1rem;}
+  .oc h3{font-size:1.2rem;}
+  .oc-price{font-size:1.75rem;}
+  .oc-em{font-size:2rem;}
+  .emp-grid{grid-template-columns:1fr;gap:1.5rem;max-width:500px;}
+  .emp-title{font-size:1.65rem;}
+  .emp-content{padding:1.4rem 1.4rem 1.5rem;}
+  .contact-grid{grid-template-columns:1fr;gap:2rem;}
+  .cta-box{padding:2rem 1.4rem;}
+  footer{padding:2rem 1.2rem;padding-bottom:calc(2rem + var(--sab));}
+  .footer-inner{flex-direction:column;text-align:center;gap:.8rem;}
+  .footer-links{justify-content:center;}
+  .float-cart{bottom:calc(1.2rem + var(--sab));right:1.2rem;width:52px;height:52px;font-size:1.2rem;}
+  .chat-fab{bottom:calc(1.2rem + var(--sab));left:1.2rem;width:52px;height:52px;font-size:1.25rem;}
+  .chat-win{left:1rem;right:1rem;width:auto;bottom:calc(5rem + var(--sab));}
+  .toast{left:1rem;right:1rem;bottom:calc(5rem + var(--sab));max-width:none;}
+  #promoPopup{left:1rem;right:1rem;max-width:none;bottom:calc(5.5rem + var(--sab));}
+  .urgency-banner{font-size:.71rem;padding:.42rem .8rem;gap:.35rem;}
+  .ub-divider{display:none;}
+  .legal-footer{padding:1.3rem 1.2rem;}
+  .legal-links-row{gap:.3rem;}
+  .ll-sep{display:none;}
+}
+
+@media(max-width:420px){
+  .hero-txt h1{font-size:2.3rem;}
+  .hero-img-frame{width:min(240px,80vw);}
+  .nos-pillars{grid-template-columns:1fr;}
+  .hf-step{font-size:.62rem;padding:.22rem .52rem;}
+  .oc{padding:1rem .6rem .9rem;}
+  .oc h3{font-size:1.1rem;}
+  .oc-price{font-size:1.5rem;}
+  .emp-price{font-size:2.1rem;}
+}
+
+@media(hover:none){
+  .oc:hover,.emp-card:hover,.nos-pillar:hover,.ric:hover,.zband:hover,.cc:hover,.cs:hover .cs-num{transform:none !important;}
+  .btn-primary:hover,.btn-outline:hover,.wa-btn:hover,.float-cart:hover,.chat-fab:hover{transform:none !important;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader" aria-hidden="true">
+  <div class="ld-plate">
+    <div class="ld-em">🥟</div>
+    <div class="ld-ring"></div>
+  </div>
+  <div class="ld-logo">La Empanada Dorada</div>
+  <div class="ld-bar"><div class="ld-fill"></div></div>
+</div>
+
+<!-- URGENCY BANNER -->
+<div class="urgency-banner" role="banner">
+  <span class="ub-pill">🔥 Reserva para mañana</span>
+  <span class="ub-text">Los pedidos de hoy se entregan <strong>mañana en adelante</strong> — ¡reserva tu fecha!</span>
+  <span class="ub-divider">|</span>
+  <span class="ub-text">📱 WhatsApp: <strong>925 863 778</strong></span>
+</div>
+
+<!-- NAV -->
+<nav id="nav" role="navigation" aria-label="Navegación principal">
+  <a href="#" class="nav-logo">
+    <span class="logo-spin" aria-hidden="true">🥟</span>La Empanada Dorada
+  </a>
+  <ul class="nav-links">
+    <li><a href="#empanadas">Sabores</a></li>
+    <li><a href="#nosotros">Nosotros</a></li>
+    <li><a href="#delivery">Envíos</a></li>
+    <li><a href="#ofertas">Packs</a></li>
+    <li><a href="mancaformulario.html">Contacto</a></li>
+    <li><a href="carrito.html" class="nav-reservar">📋 Reservar ahora</a></li>
+  </ul>
+  <button class="hamburger" id="ham" onclick="toggleMenu()" aria-label="Abrir menú" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Menú de navegación">
+  <button class="mobile-close" onclick="toggleMenu()" aria-label="Cerrar menú">✕</button>
+  <a href="#empanadas" onclick="toggleMenu()">Sabores</a>
+  <a href="#nosotros" onclick="toggleMenu()">Nosotros</a>
+  <a href="#delivery" onclick="toggleMenu()">Envíos</a>
+  <a href="#ofertas" onclick="toggleMenu()">Packs</a>
+  <a href="#contacto" onclick="toggleMenu()">Contacto</a>
+  <a href="carrito.html" onclick="toggleMenu()" style="color:var(--gold)">📋 Reservar</a>
+</div>
+
+<!-- HERO -->
+<section id="hero" aria-label="Inicio">
+  <div class="hero-bg" aria-hidden="true">
+    <div class="hero-gradient"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-particles" id="heroParticles"></div>
+  </div>
+  <div class="hero-inner">
+    <div class="hero-txt">
+      <div class="hero-tag"><span class="tag-dot" aria-hidden="true"></span>Reserva · Yape · Delivery</div>
+      <h1><span class="italic ol">Artesanal</span><br><span class="gd italic">y Dorada</span></h1>
+      <p class="hero-desc">Crujientes por fuera, jugosas por dentro. Hechas al momento con los mejores ingredientes frescos de Lima.</p>
+      <div class="hero-badges">
+        <span class="badge">🔥 Horneadas al momento</span>
+        <span class="badge">🥩 Carne &amp; Pollo</span>
+        <span class="badge">🛵 Delivery Yango/InDrive</span>
+        <span class="badge">💜 Pago con Yape</span>
+      </div>
+      <div class="hero-flow">
+        <div class="hf-step">1️⃣ <strong>Elige pack</strong></div>
+        <span class="hf-arr" aria-hidden="true">→</span>
+        <div class="hf-step">2️⃣ <strong>Elige fecha</strong></div>
+        <span class="hf-arr" aria-hidden="true">→</span>
+        <div class="hf-step">3️⃣ <strong>Paga con Yape</strong></div>
+        <span class="hf-arr" aria-hidden="true">→</span>
+        <div class="hf-step">🎉 <strong>¡Disfruta!</strong></div>
+      </div>
+      <div class="hero-cta">
+        <a href="carrito.html" class="btn-primary">📋 Reservar ahora →</a>
+        <a href="#empanadas" class="btn-outline">Ver sabores</a>
+      </div>
+    </div>
+    <div class="hero-vis" aria-hidden="true">
+      <div class="hero-img-frame">
+        <div class="ring-outer"></div>
+        <div class="ring-inner"></div>
+        <div class="hero-img-wrap">
+          <img src="assents/Imagen1.png" alt="Empanadas artesanales doradas La Empanada Dorada" onerror="this.src='assents/logo.png'" loading="eager"/>
+          <div class="hero-img-overlay"></div>
+        </div>
+        <div class="float-badge fb1">🥩 Empanada de Carne<strong>S/ 6.50</strong></div>
+        <div class="float-badge fb2">📋 Solo por Yape<strong>946 703 698</strong></div>
+        <div class="float-badge fb3">⭐ Clientes felices<strong>98%</strong></div>
+        <div class="mobile-float-badges">
+          <div class="mfb">🥩 Carne <strong>S/ 6.50</strong></div>
+          <div class="mfb">💜 Yape <strong>fácil</strong></div>
+          <div class="mfb">⭐ <strong>98%</strong> felices</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-ind" aria-hidden="true"><div class="sc-mouse"><div class="sc-wheel"></div></div><span>Scroll</span></div>
+</section>
+
+<!-- EMPANADAS -->
+<section id="empanadas" aria-label="Nuestras empanadas">
+  <div class="s-wrap">
+    <div class="s-title rv">
+      <div class="s-label">Nuestros sabores</div>
+      <h2>Solo 2 sabores, <em>perfectos</em></h2>
+      <p>Nos especializamos en hacerlos increíbles — carne y pollo, clásicos de siempre</p>
+    </div>
+    <div class="emp-grid rv">
+      <div class="emp-card">
+        <div class="emp-img-area">
+          <img src="assents/EmpanadaCarne.png" alt="Empanada de Carne artesanal" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" loading="lazy"/>
+          <div class="emp-img-placeholder" style="display:none"><span class="ph-em">🥩</span><span class="ph-txt">Sube tu foto aquí</span><span style="font-size:.68rem;color:rgba(255,248,236,.3)">assents/EmpanaadaCarne.png</span></div>
+          <div class="emp-img-shine"></div>
+          <div class="emp-overlay"></div>
+        </div>
+        <div class="emp-content">
+          <div class="emp-type-badge">🥩 Signature</div>
+          <h3 class="emp-title">Empanada de Carne</h3>
+          <p class="emp-desc">Rellena con carne molida sazonada con especias peruanas, aceitunas, huevo duro y cebolla — la favorita de siempre.</p>
+          <div class="emp-details">
+            <div class="emp-detail"><span class="ed-icon">🔥</span><span>Horneada al momento en cada pedido</span></div>
+            <div class="emp-detail"><span class="ed-icon">🥩</span><span>Carne molida fresca, seleccionada diariamente</span></div>
+            <div class="emp-detail"><span class="ed-icon">✨</span><span>Masa dorada y crujiente por fuera, jugosa por dentro</span></div>
+          </div>
+          <div class="emp-price-row">
+            <div><div class="emp-price">S/ 6.50</div><div class="emp-per">por empanada · mínimo x4</div></div>
+            <a href="carrito.html" class="emp-cta-mini">Reservar →</a>
+          </div>
+        </div>
+      </div>
+      <div class="emp-card">
+        <div class="emp-img-area">
+          <img src="assents/EmpanadaPollo.png" alt="Empanada de Pollo artesanal" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" loading="lazy"/>
+          <div class="emp-img-placeholder" style="display:none"><span class="ph-em">🍗</span><span class="ph-txt">Sube tu foto aquí</span><span style="font-size:.68rem;color:rgba(255,248,236,.3)">assents/EmpanadaPollo.png</span></div>
+          <div class="emp-img-shine"></div>
+          <div class="emp-overlay"></div>
+        </div>
+        <div class="emp-content">
+          <div class="emp-type-badge">🍗 Clásico</div>
+          <h3 class="emp-title">Empanada de Pollo</h3>
+          <p class="emp-desc">Pollo deshilachado jugoso con cebolla caramelizada, ají amarillo y hierbas frescas — suave, sabroso e irresistible.</p>
+          <div class="emp-details">
+            <div class="emp-detail"><span class="ed-icon">🔥</span><span>Horneada al momento en cada pedido</span></div>
+            <div class="emp-detail"><span class="ed-icon">🍗</span><span>Pollo fresco deshilachado, jugoso y sazonado</span></div>
+            <div class="emp-detail"><span class="ed-icon">✨</span><span>Masa dorada y crujiente por fuera, jugosa por dentro</span></div>
+          </div>
+          <div class="emp-price-row">
+            <div><div class="emp-price">S/ 6.50</div><div class="emp-per">por empanada · mínimo x4</div></div>
+            <a href="carrito.html" class="emp-cta-mini">Reservar →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OFFERS -->
+<section id="ofertas" aria-label="Packs y precios">
+  <div class="s-wrap">
+    <div class="s-title rv">
+      <div class="s-label">Packs especiales</div>
+      <h2>Más empanadas, <em>más ahorro</em></h2>
+      <p>Elige tu pack, mezcla sabores y reserva — cuantas más pidas, más ahorras</p>
+    </div>
+    <div class="offers-grid">
+      <div class="oc rv" id="oc4" style="transition-delay:.05s"><span class="oc-em">🥟</span><h3>Pack x4</h3><div class="oc-tag">Pedido mínimo</div><p>Prueba los 2 sabores.</p><div style="height:.5rem"></div><div class="oc-price">S/ 26</div><div class="oc-per">S/ 6.50 c/u</div><button class="oc-btn" onclick="selectPack(4,26,null)"><span>Reservar →</span></button></div>
+      <div class="oc rv" id="oc8" style="transition-delay:.1s"><span class="oc-em">🥟🥟</span><h3>Pack x8</h3><div class="oc-tag">Para compartir</div><p>Para casa o trabajo.</p><div class="oc-old">S/ 52</div><div class="oc-price">S/ 48</div><span class="oc-save">🎉 Ahorras S/ 4</span><div class="oc-per">S/ 6.00 c/u</div><button class="oc-btn" onclick="selectPack(8,48,4)"><span>Reservar →</span></button></div>
+      <div class="oc featured rv" id="oc12" style="transition-delay:.15s"><div class="oc-best">⭐ Más pedido</div><span class="oc-em">🎁</span><h3>Pack x12</h3><div class="oc-tag">El favorito</div><p>Reuniones y almuerzos.</p><div class="oc-old">S/ 78</div><div class="oc-price">S/ 69</div><span class="oc-save">🎉 Ahorras S/ 9</span><div class="oc-per">S/ 5.75 c/u</div><button class="oc-btn" onclick="selectPack(12,69,9)"><span>Reservar →</span></button></div>
+      <div class="oc rv" id="oc20" style="transition-delay:.2s"><span class="oc-em">🥳</span><h3>Pack x20</h3><div class="oc-tag">Eventos y celebraciones</div><p>Para celebrar en grande.</p><div class="oc-old">S/ 130</div><div class="oc-price">S/ 110</div><span class="oc-save">🎉 Ahorras S/ 20</span><div class="oc-per">S/ 5.50 c/u</div><button class="oc-btn" onclick="selectPack(20,110,20)"><span>Reservar →</span></button></div>
+      <div class="oc rv" id="oc30" style="transition-delay:.25s"><span class="oc-em">🎊</span><h3>Pack x30</h3><div class="oc-tag">Mejor precio x unidad</div><p>Fiestas y eventos grandes.</p><div class="oc-old">S/ 195</div><div class="oc-price">S/ 160</div><span class="oc-save">🎉 Ahorras S/ 35</span><div class="oc-per">S/ 5.33 c/u</div><button class="oc-btn" onclick="selectPack(30,160,35)"><span>Reservar →</span></button></div>
+    </div>
+  </div>
+</section>
+
+<!-- CÓMO FUNCIONA -->
+<section id="como" aria-label="Cómo reservar">
+  <div class="como-inner">
+    <div class="como-label">¿Cómo reservar?</div>
+    <h2 class="como-title rv">Tu pedido en <em>4 pasos simples</em></h2>
+    <p class="como-sub rv">Sin complicaciones — todo por WhatsApp y Yape</p>
+    <div class="como-steps rv">
+      <div class="cs cs-highlight"><div class="cs-num">1</div><h4>Elige tu pack y fecha</h4><p>Selecciona cuántas empanadas quieres y qué día las quieres recibir — mañana en adelante.</p></div>
+      <div class="cs"><div class="cs-num">2</div><h4>Distribuye sabores</h4><p>Mezcla carne y pollo a tu gusto — la combinación perfecta para ti.</p></div>
+      <div class="cs cs-highlight"><div class="cs-num">3</div><h4>Paga con Yape</h4><p>Yapea el total al <strong style="color:var(--gold)">946 703 698</strong> y captura el comprobante.</p></div>
+      <div class="cs"><div class="cs-num">4</div><h4>Confirma y espera</h4><p>Envía la captura al <strong style="color:var(--gold)">925 863 778</strong> y coordinamos la entrega en tu fecha.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div id="stats" class="rv" role="region" aria-label="Estadísticas">
+  <div class="stats-inner">
+    <div><div class="stat-num" data-target="2500" data-suffix="+">0</div><div class="stat-lbl">Empanadas vendidas</div></div>
+    <div><div class="stat-num" data-target="2" data-suffix="">0</div><div class="stat-lbl">Sabores artesanales</div></div>
+    <div><div class="stat-num" data-target="98" data-suffix="%">0</div><div class="stat-lbl">Clientes felices</div></div>
+    <div><div class="stat-num" data-target="7" data-suffix="">0</div><div class="stat-lbl">Días a la semana</div></div>
+  </div>
+  <div class="stats-cred">📊 Datos basados en pedidos registrados y reseñas de clientes</div>
+</div>
+
+<!-- NOSOTROS -->
+<section id="nosotros" aria-label="Nuestra historia">
+  <div class="s-wrap">
+    <div class="nos-grid">
+      <div class="rl">
+        <div class="nos-img-wrap">
+          <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&q=80" alt="Cocina artesanal de La Empanada Dorada" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=700&q=80'"/>
+          <div class="nos-img-overlay" aria-hidden="true"></div>
+          <div class="nos-stat-pill"><div><div class="nsp-num">2500+</div><div class="nsp-lbl">Empanadas<br>vendidas</div></div></div>
+        </div>
+      </div>
+      <div class="nos-txt rr">
+        <div class="s-label" style="display:inline-flex;margin-bottom:.8rem">Nuestra historia</div>
+        <h2>Hechas con <em>amor</em> en Lima</h2>
+        <p>La Empanada Dorada nació con una misión simple: llevar a tu mesa el sabor auténtico de las empanadas peruanas, hechas al momento con ingredientes frescos y mucho cariño.</p>
+        <p>Cada empanada sale del horno crujiente por fuera y jugosa por dentro. Usamos recetas tradicionales perfeccionadas con el tiempo — carne y pollo, los dos sabores que más nos piden.</p>
+        <div class="nos-pillars">
+          <div class="nos-pillar"><span class="nos-pillar-em">🔥</span><div class="nos-pillar-title">Horneadas al momento</div><div class="nos-pillar-desc">Preparamos tu pedido cuando lo recibimos, nunca recalentamos.</div></div>
+          <div class="nos-pillar"><span class="nos-pillar-em">🥩</span><div class="nos-pillar-title">Ingredientes frescos</div><div class="nos-pillar-desc">Seleccionamos los mejores insumos cada día para garantizar sabor.</div></div>
+          <div class="nos-pillar"><span class="nos-pillar-em">🛵</span><div class="nos-pillar-title">Delivery express</div><div class="nos-pillar-desc">Llegamos a toda Lima por Yango o InDrive, de lunes a domingo.</div></div>
+          <div class="nos-pillar"><span class="nos-pillar-em">💜</span><div class="nos-pillar-title">Pago fácil con Yape</div><div class="nos-pillar-desc">Reserva y paga en segundos, sin complicaciones.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESERVA INFO -->
+<section id="reserva-info" aria-label="Sistema de reservas">
+  <div class="ri-inner">
+    <h2 class="ri-title rv">¿Cómo es el sistema de <em>reserva</em>?</h2>
+    <p class="ri-sub rv">Pedidos para el día siguiente o más — así garantizamos empanadas recién horneadas para tu fecha</p>
+    <div class="ri-cards rv">
+      <div class="ric ric-warn"><span class="ric-em">📅</span><h4>Reserva con fecha</h4><p>Elige el día exacto que quieres recibir tu pedido — mañana, pasado o cuando quieras. ¡Sin pedidos del mismo día!</p></div>
+      <div class="ric"><span class="ric-em">💜</span><h4>Pago adelantado con Yape</h4><p>Yapeas el monto total al <strong style="color:var(--gold)">946 703 698</strong>. Capturas el comprobante y nos lo envías al <strong style="color:var(--gold)">925 863 778</strong>.</p></div>
+      <div class="ric"><span class="ric-em">🛵</span><h4>Delivery por Yango o InDrive</h4><p>El envío se coordina el día de tu entrega. Atendemos de <strong style="color:var(--gold)">8am a 9pm</strong>, todos los días.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- DELIVERY -->
+<section id="delivery" aria-label="Zonas de delivery">
+  <div class="s-wrap">
+    <div class="s-title rv">
+      <div class="s-label">Delivery</div>
+      <h2>Llegamos a <em>tu zona</em></h2>
+      <p>El costo de envío se coordina por WhatsApp según tu ubicación vía Yango o InDrive</p>
+    </div>
+    <div class="di-grid rv">
+      <div class="di-left">
+        <h3>🛵 Zonas de referencia</h3>
+        <p>Estos precios son referenciales. El costo real depende de Yango o InDrive al momento del pedido. Te lo confirmamos antes de despachar.</p>
+        <div class="zone-bands">
+          <div class="zband"><div class="zband-cost">~S/ 9</div><div class="zband-list">Miraflores · San Isidro · Barranco · Chorrillos · Santiago de Surco · SJM · San Borja · Surquillo · Lince</div></div>
+          <div class="zband"><div class="zband-cost">~S/ 11</div><div class="zband-list">Villa El Salvador · Villa María del Triunfo · La Molina · San Miguel · Pueblo Libre · Jesús María · Magdalena del Mar · San Luis</div></div>
+          <div class="zband"><div class="zband-cost">~S/ 12</div><div class="zband-list">Lima Centro / Cercado · Breña</div></div>
+          <div class="zband"><div class="zband-cost">~S/ 13</div><div class="zband-list">El Agustino · Rímac</div></div>
+          <div class="zband"><div class="zband-cost">~S/ 14</div><div class="zband-list">Los Olivos · Ate / Vitarte · Independencia · Santa Anita</div></div>
+          <div class="zband"><div class="zband-cost">~S/ 15</div><div class="zband-list">San Juan de Lurigancho</div></div>
+          <div class="zband"><div class="zband-cost">~S/ 16</div><div class="zband-list">Callao · Comas</div></div>
+          <div class="zband" style="border-color:rgba(192,57,43,.18)"><div class="zband-cost" style="color:rgba(255,110,90,.75);background:rgba(192,57,43,.1);border-color:rgba(192,57,43,.25)">🚫</div><div class="zband-list" style="color:rgba(255,110,90,.65)">Sin cobertura: Carabayllo, Ventanilla, Puente Piedra, Lurigancho-Chosica, Pachacámac, Lurín</div></div>
+        </div>
+      </div>
+      <div class="di-right">
+        <a href="https://www.google.com/maps/place/Lima,+Peru" target="_blank" rel="noopener noreferrer" class="di-map-static" aria-label="Ver Lima en Google Maps">
+          <div class="map-overlay"><span class="map-pin">📍</span><span class="map-cta">Ver en Google Maps →</span></div>
+        </a>
+        <div class="di-info">
+          <strong>🛵 ¿Cómo funciona el delivery?</strong>
+          Confirmamos tu reserva y coordinamos el envío por Yango o InDrive el día de tu entrega. <strong style="color:var(--gold)">Si el costo real varía, te avisamos por WhatsApp antes de despachar.</strong> Atendemos de <strong style="color:var(--gold)">8am a 9pm</strong> al <strong style="color:var(--gold)">925 863 778</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section id="contacto" aria-label="Contacto y reservas">
+  <div class="s-wrap">
+    <div class="s-title rv">
+      <div class="s-label">Contáctanos</div>
+      <h2>¿Listo para <em>reservar?</em></h2>
+    </div>
+    <div class="contact-grid">
+      <div class="cc-list rl">
+        <div class="cc"><div class="cc-icon" aria-hidden="true">📞</div><div><h4>WhatsApp para pedidos</h4><a href="https://wa.me/51925863778" target="_blank" rel="noopener noreferrer">925 863 778</a></div></div>
+        <div class="cc"><div class="cc-icon" aria-hidden="true">💜</div><div><h4>Yape — Pago adelantado</h4><p>946 703 698 · La Empanada Dorada</p></div></div>
+        <div class="cc"><div class="cc-icon" aria-hidden="true">📦</div><div><h4>Pedido mínimo</h4><p>4 empanadas · Packs con descuento desde x8</p></div></div>
+        <div class="cc"><div class="cc-icon" aria-hidden="true">⏰</div><div><h4>Horario de atención</h4><p>Lunes a Domingo — 8:00 am a 9:00 pm</p></div></div>
+        <div class="cc"><div class="cc-icon" aria-hidden="true">🛵</div><div><h4>Delivery</h4><p>Por Yango o InDrive · Costo varía por zona</p></div></div>
+      </div>
+      <div class="cta-box rr">
+        <h3>¡Haz tu reserva!</h3>
+        <p>Elige tu pack y fecha, distribuye sabores, paga con Yape y envíanos el comprobante. ¡Confirmamos tu pedido en minutos!</p>
+        <a href="carrito.html" class="btn-primary" style="display:inline-flex;margin-bottom:1.1rem">📋 Ir a reservar</a>
+        <br>
+        <a href="https://wa.me/51925863778?text=Hola!%20Quiero%20hacer%20una%20reserva%20de%20empanadas%20%F0%9F%A5%9F" target="_blank" rel="noopener noreferrer" class="wa-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Chatear por WhatsApp
+        </a>
+        <div class="reserve-note">
+          💡 <strong>Recuerda:</strong> Todos los pedidos son con <strong>reserva previa para el día siguiente o más</strong>. Paga con Yape al <strong>946 703 698</strong> y envía el comprobante al <strong>925 863 778</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER PRINCIPAL -->
+<footer>
+  <div class="footer-inner">
+    <div class="ft-logo">🥟 La Empanada Dorada</div>
+    <div class="footer-links">
+      <a href="https://wa.me/51925863778" target="_blank" rel="noopener noreferrer">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        925 863 778
+      </a>
+      <span style="color:rgba(200,144,42,.35);font-size:.78rem">⏰ 8am – 9pm · Todos los días</span>
+    </div>
+    <p>© 2025 — Hechas con amor en Lima · Pedidos con reserva previa</p>
+  </div>
+</footer>
+
+<!-- LEGAL FOOTER -->
+<div class="legal-footer" role="contentinfo" aria-label="Información legal">
+  <div class="legal-footer-inner">
+    <div class="lf-badge">⚖️ Conforme a la legislación peruana · <span>Ley N° 29571 &amp; N° 29733</span></div>
+    <nav class="legal-links-row" aria-label="Enlaces legales">
+      <a href="terminos.html">📋 Términos y Condiciones</a>
+      <span class="ll-sep">·</span>
+      <a href="privacidad.html">🔒 Política de Privacidad</a>
+      <span class="ll-sep">·</span>
+      <a href="reclamaciones.html">📖 Libro de Reclamaciones</a>
+      <span class="ll-sep">·</span>
+      <a href="nosotros.html">🏪 Datos del Negocio</a>
+    </nav>
+    <p class="legal-copy">
+      <strong>La Empanada Dorada</strong> · Lima, Perú · WhatsApp pedidos: 925 863 778 · Yape: 946 703 698<br>
+      Emprendimiento de alimentos artesanales · Atención Lun–Dom 8:00 am – 9:00 pm · Solo delivery con reserva previa
+    </p>
+  </div>
+</div>
+
+<!-- PROMO POPUP -->
+<div id="promoPopup" role="dialog" aria-modal="true" aria-label="Oferta especial">
+  <div class="promo-inner">
+    <button class="promo-close" onclick="closePromo()" aria-label="Cerrar oferta">✕</button>
+    <div class="promo-badge"><span class="promo-badge-dot" aria-hidden="true"></span><span id="promoBadgeText">Oferta del momento</span></div>
+    <span class="promo-em" id="promoEm" aria-hidden="true">🎁</span>
+    <div class="promo-title" id="promoTitle">Pack x12</div>
+    <div class="promo-desc" id="promoDesc">El pack más pedido. Para reuniones y almuerzos en familia.</div>
+    <div class="promo-price">
+      <span class="promo-old" id="promoOld">S/ 78</span>
+      <span class="promo-new" id="promoNew">S/ 69</span>
+      <span class="promo-save" id="promoSave">🎉 −S/ 9</span>
+    </div>
+    <a href="carrito.html" class="promo-btn" id="promoBtn">Reservar ahora →</a>
+  </div>
+</div>
+
+<!-- FLOAT CART -->
+<a href="carrito.html" class="float-cart" id="floatCart" aria-label="Ir a reservar">
+  📋<span class="cart-count" id="cartCount">0</span>
+</a>
+
+<!-- TOAST -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- CHATBOT -->
+<button class="chat-fab" id="chatFab" onclick="toggleChat()" aria-label="Abrir chat de ayuda" aria-expanded="false">
+  🤖<span class="n-dot" aria-hidden="true"></span>
+</button>
+<div class="chat-win" id="chatWin" role="dialog" aria-modal="true" aria-label="Chat de ayuda">
+  <div class="cw-header">
+    <div class="bot-avatar" aria-hidden="true">🥟</div>
+    <div class="bot-info"><h4>EmpanaBot</h4><p><span class="bot-online" aria-hidden="true"></span> Asistente inteligente</p></div>
+    <button class="cw-close" onclick="toggleChat()" aria-label="Cerrar chat">✕</button>
+  </div>
+  <div class="api-notice" id="apiNotice">⚠️ Para ayuda directa, escríbenos al WhatsApp: 925 863 778</div>
+  <div class="cw-msgs" id="cwMsgs" aria-live="polite"></div>
+  <div class="cw-quick" id="cwQuick"></div>
+  <div class="cw-input-row">
+    <input class="chat-inp" id="chatInp" placeholder="Pregunta lo que quieras..." aria-label="Mensaje" onkeydown="if(event.key==='Enter')sendChatMsg()" autocomplete="off" autocorrect="off"/>
+    <button class="chat-send" onclick="sendChatMsg()" aria-label="Enviar">➤</button>
+  </div>
+</div>
+
+<script>
+/* ── CONFIG ── */
+//const ANTHROPIC_API_KEY = '';
+
+/* ── LOADER ── */
+window.addEventListener('load', () => {
+  setTimeout(() => { const l = document.getElementById('loader'); if (l) l.classList.add('hidden'); }, 1600);
+});
+
+/* ── PARTICLES ── */
+(function() {
+  const c = document.getElementById('heroParticles'); if (!c) return;
+  const count = window.innerWidth < 768 ? 6 : 16;
+  const frag = document.createDocumentFragment();
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div'); p.className = 'hp';
+    p.style.cssText = 'left:' + (Math.random()*100) + '%;animation-duration:' + (8+Math.random()*14) + 's;animation-delay:' + (Math.random()*12) + 's;width:' + (2+Math.random()*4) + 'px;height:' + (2+Math.random()*4) + 'px';
+    frag.appendChild(p);
+  }
+  c.appendChild(frag);
+})();
+
+/* ── NAV SCROLL ── */
+let ticking = false;
+window.addEventListener('scroll', () => {
+  if (!ticking) { requestAnimationFrame(() => { document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60); ticking = false; }); ticking = true; }
+}, { passive: true });
+
+/* ── MENU ── */
+function toggleMenu() {
+  const ham = document.getElementById('ham'), menu = document.getElementById('mobileMenu');
+  const open = menu.classList.toggle('open');
+  ham.classList.toggle('open', open); ham.setAttribute('aria-expanded', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const menu = document.getElementById('mobileMenu');
+    if (menu.classList.contains('open')) toggleMenu();
+    if (document.getElementById('chatWin').classList.contains('open')) toggleChat();
+  }
+});
+
+/* ── SCROLL REVEAL ── */
+const ro = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); ro.unobserve(e.target); } });
+}, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+document.querySelectorAll('.rv,.rl,.rr').forEach(el => ro.observe(el));
+
+/* ── STATS ── */
+const so = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.querySelectorAll('.stat-num').forEach(el => {
+      const target = +el.dataset.target, suffix = el.dataset.suffix || ''; let cur = 0;
+      const step = target / 75;
+      const tick = () => { cur = Math.min(cur + step, target); el.textContent = Math.floor(cur) + suffix; if (cur < target) requestAnimationFrame(tick); };
+      requestAnimationFrame(tick);
+    });
+    so.unobserve(e.target);
+  });
+}, { threshold: 0.3 });
+const se = document.getElementById('stats'); if (se) so.observe(se);
+
+/* ── PACKS ── */
+const PACK_MAP = {4:{qty:4,price:26,savings:null,label:'Pack x4'},8:{qty:8,price:48,savings:4,label:'Pack x8'},12:{qty:12,price:69,savings:9,label:'Pack x12'},20:{qty:20,price:110,savings:20,label:'Pack x20'},30:{qty:30,price:160,savings:35,label:'Pack x30'}};
+function getSavedPack() { try { return JSON.parse(sessionStorage.getItem('empanada_pack') || 'null'); } catch { return null; } }
+function selectPack(qty, price, savings) {
+  try { sessionStorage.setItem('empanada_pack', JSON.stringify({qty, price, savings})); } catch {}
+  document.querySelectorAll('.oc').forEach(el => { el.classList.remove('sel-pack'); const b = el.querySelector('.oc-btn span'); if (b && b.textContent.startsWith('✓')) b.textContent = 'Reservar →'; });
+  const ocEl = document.getElementById('oc' + qty);
+  if (ocEl) { ocEl.classList.add('sel-pack'); const b = ocEl.querySelector('.oc-btn span'); if (b) b.textContent = '✓ Seleccionado'; }
+  updateCartBadge();
+  const pk = PACK_MAP[qty]; if (pk) showToast('🥟 ' + pk.label + ' seleccionado — ¡ahora elige tu fecha!');
+  closePromo(); setTimeout(() => { window.location.href = 'carrito.html'; }, 500);
+}
+function updateCartBadge() {
+  const p = getSavedPack(), badge = document.getElementById('cartCount'); if (!badge) return;
+  if (p && PACK_MAP[p.qty]) { badge.textContent = p.qty; badge.style.display = 'flex'; const ocEl = document.getElementById('oc' + p.qty); if (ocEl) { ocEl.classList.add('sel-pack'); const b = ocEl.querySelector('.oc-btn span'); if (b) b.textContent = '✓ Seleccionado'; } }
+  else { badge.style.display = 'none'; }
+}
+
+/* ── TOAST ── */
+let toastT = null;
+function showToast(msg) { const t = document.getElementById('toast'); if (!t) return; if (toastT) clearTimeout(toastT); t.textContent = msg; t.classList.add('on'); toastT = setTimeout(() => t.classList.remove('on'), 2800); }
+
+/* ── PROMO ── */
+const PROMOS = [
+  {badge:'🔥 Más pedido',em:'🎁',title:'Pack x12',desc:'El favorito de nuestros clientes. Perfecto para almuerzos y reuniones.',old:'S/ 78',price:'S/ 69',save:'🎉 −S/ 9',qty:12,p:69,s:9},
+  {badge:'🎉 Excelente ahorro',em:'🥳',title:'Pack x20',desc:'Para celebraciones y eventos. ¡Más empanadas, más alegría!',old:'S/ 130',price:'S/ 110',save:'🎉 −S/ 20',qty:20,p:110,s:20},
+  {badge:'⭐ Oferta especial',em:'🎊',title:'Pack x30',desc:'El mejor precio por unidad. Ideal para fiestas grandes.',old:'S/ 195',price:'S/ 160',save:'🎉 −S/ 35',qty:30,p:160,s:35},
+  {badge:'💜 Para compartir',em:'🥟🥟',title:'Pack x8',desc:'Justo para compartir en casa o llevar al trabajo.',old:'S/ 52',price:'S/ 48',save:'🎉 −S/ 4',qty:8,p:48,s:4}
+];
+let promoIdx=0,promoCount=0,promoTimer=null; const MAX_PROMOS=2;
+function showPromo() {
+  if (promoCount>=MAX_PROMOS) return;
+  if (document.getElementById('chatWin').classList.contains('open')) return;
+  const pr=PROMOS[promoIdx%PROMOS.length];promoIdx++;promoCount++;
+  [['promoBadgeText',pr.badge],['promoEm',pr.em],['promoTitle',pr.title],['promoDesc',pr.desc],['promoOld',pr.old],['promoNew',pr.price],['promoSave',pr.save]].forEach(([id,val])=>{const el=document.getElementById(id);if(el)el.textContent=val;});
+  const btn=document.getElementById('promoBtn');
+  if(btn){btn.href='carrito.html';btn.onclick=()=>{try{sessionStorage.setItem('empanada_pack',JSON.stringify({qty:pr.qty,price:pr.p,savings:pr.s}));}catch{};};}
+  document.getElementById('promoPopup').classList.add('show');
+  if(promoTimer)clearTimeout(promoTimer);promoTimer=setTimeout(closePromo,8000);
+}
+function closePromo(){document.getElementById('promoPopup').classList.remove('show');if(promoTimer)clearTimeout(promoTimer);}
+setTimeout(()=>{showPromo();setTimeout(showPromo,90000);},6000);
+
+/* ── CHATBOT ── */
+const BOT_SYSTEM=`Eres EmpanaBot, el asistente virtual de "La Empanada Dorada", empanadas artesanales en Lima, Perú. Eres amable, entusiasta y conciso.
+PACKS: x4=S/26 | x8=S/48 | x12=S/69⭐ | x20=S/110 | x30=S/160
+SABORES: Carne y Pollo. Se pueden mezclar en el mismo pack.
+RESERVA: Solo para MAÑANA en adelante. Pago Yape 946703698. Comprobante a WhatsApp 925863778.
+DELIVERY: Yango/InDrive, S/9-16 según zona. Sin cobertura: Carabayllo, Ventanilla, Puente Piedra.
+HORARIO: Lun-Dom 8am-9pm.
+Responde en español, máx 3-4 oraciones, con emojis moderados.`;
+
+let chatOpen=false,chatHistory=[],isBotTyping=false;
+const QUICK_Q=['¿Cómo reservo?','¿Para cuándo puedo pedir?','¿Qué sabores hay?','¿Cómo es el delivery?','¿Cuánto cuesta un pack?'];
+function toggleChat(){
+  chatOpen=!chatOpen;
+  const win=document.getElementById('chatWin'),fab=document.getElementById('chatFab');
+  win.classList.toggle('open',chatOpen);fab.setAttribute('aria-expanded',chatOpen);
+  const dot=document.querySelector('.n-dot');if(dot)dot.style.display=chatOpen?'none':'block';
+  if(chatOpen&&!document.getElementById('cwMsgs').children.length){if(!ANTHROPIC_API_KEY)document.getElementById('apiNotice').style.display='block';setTimeout(()=>botSay('¡Hola! 👋 Soy **EmpanaBot**. Los pedidos son para **mañana o más adelante** 📅. ¿En qué te ayudo?'),300);setTimeout(renderQuick,1100);}
+  if(chatOpen)setTimeout(()=>{const i=document.getElementById('chatInp');if(i)i.focus();},400);
+}
+function addBotMsg(text){const box=document.getElementById('cwMsgs');const d=document.createElement('div');d.className='chat-msg bot';d.innerHTML=text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');box.appendChild(d);box.scrollTop=box.scrollHeight;}
+function botSay(txt){const box=document.getElementById('cwMsgs');const typing=document.createElement('div');typing.className='chat-msg bot typing-dots';typing.id='typing-indicator';typing.innerHTML='<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';box.appendChild(typing);box.scrollTop=box.scrollHeight;setTimeout(()=>{const ind=document.getElementById('typing-indicator');if(ind)ind.remove();addBotMsg(txt);},700);}
+function userSay(txt){const box=document.getElementById('cwMsgs');const d=document.createElement('div');d.className='chat-msg user';d.textContent=txt;box.appendChild(d);box.scrollTop=box.scrollHeight;}
+function renderQuick(){const qEl=document.getElementById('cwQuick');if(!qEl)return;qEl.innerHTML=QUICK_Q.map(q=>`<button class="quick-btn" onclick="quickAsk('${q.replace(/'/g,"\\'")}')">${q}</button>`).join('');}
+function quickAsk(q){document.getElementById('cwQuick').innerHTML='';userSay(q);processMessage(q);}
+function sendChatMsg(){const inp=document.getElementById('chatInp'),v=inp.value.trim();if(!v||isBotTyping)return;inp.value='';document.getElementById('cwQuick').innerHTML='';userSay(v);processMessage(v);}
+async function processMessage(userMsg){if(isBotTyping)return;isBotTyping=true;chatHistory.push({role:'user',content:userMsg});if(ANTHROPIC_API_KEY)await callClaudeAPI();else fallbackResponse(userMsg);}
+async function callClaudeAPI(){
+  const box=document.getElementById('cwMsgs');const typing=document.createElement('div');typing.className='chat-msg bot typing-dots';typing.id='typing-indicator';typing.innerHTML='<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';box.appendChild(typing);box.scrollTop=box.scrollHeight;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:300,system:BOT_SYSTEM,messages:chatHistory})});
+    const data=await res.json();const ind=document.getElementById('typing-indicator');if(ind)ind.remove();
+    if(data.content&&data.content[0]&&data.content[0].text){const reply=data.content[0].text;chatHistory.push({role:'assistant',content:reply});addBotMsg(reply);}else throw new Error('API error');
+  }catch(err){const ind=document.getElementById('typing-indicator');if(ind)ind.remove();const last=chatHistory[chatHistory.length-1];fallbackResponse(last?last.content:'');return;}
+  isBotTyping=false;setTimeout(renderQuick,600);
+}
+const KB=[[/reserva|como reservo|como pido|proceso|funciona/i,'Los pedidos son por **reserva previa** 📋:\n1️⃣ Elige pack y **fecha** (mañana o más)\n2️⃣ Yapea al **946 703 698**\n3️⃣ Envía comprobante al **925 863 778**\n4️⃣ ¡Te confirmamos y coordinamos!'],[/fecha|cuando|dia|mañana|hoy/i,'📅 Solo aceptamos reservas para **mañana en adelante** — así garantizamos empanadas recién horneadas para tu fecha.'],[/precio|cuanto|cuesta|vale/i,'El precio base es **S/ 6.50** por empanada 🥟. El mínimo es 4 unidades (S/ 26). Desde x8 tienes descuentos!'],[/sabor|sabores|tipos|que tienen/i,'¡Tenemos 2 sabores! 🥟\n• **Carne** — molida con aceitunas, cebolla y huevo\n• **Pollo** — deshilachado con cebolla caramelizada y especias\nPuedes mezclarlos en tu pack.'],[/pago|pagar|yape/i,'Aceptamos **Yape** 💜 al **946 703 698**. Yapeas y mandas el comprobante al **925 863 778**. ¡Así de simple!'],[/envio|delivery|zona|distrito|yango|indrive/i,'🛵 Delivery por **Yango o InDrive**, costo S/ 9 a S/ 16 según tu zona. Te confirmamos el precio exacto antes de despachar.'],[/horario|cuando|horas|atienden/i,'Atendemos **todos los días de 8am a 9pm** 🕗, incluyendo fines de semana.'],[/pack|oferta|descuento/i,'Packs 🎉: x8→**S/48** · x12→**S/69**⭐ · x20→**S/110** · x30→**S/160**. ¡Cuantas más, más ahorras!'],[/^(hola|buenas|hey|hi|ola|buenos)/i,'¡Hola! 👋 Bienvenido a **La Empanada Dorada**. Pedidos para **mañana en adelante** 📅. ¿En qué te ayudo?']];
+function fallbackResponse(q){let reply='Para esa consulta te recomiendo escribirnos al **925 863 778** por WhatsApp 💬. ¡Respondemos rápido!';for(const[pat,ans] of KB){if(pat.test(q)){reply=ans;break;}}setTimeout(()=>{addBotMsg(reply);isBotTyping=false;setTimeout(renderQuick,1000);},800);}
+
+/* ── INIT ── */
+updateCartBadge();
+</script>
+</body>
+</html>

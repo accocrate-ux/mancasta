@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#1C0D00"/>
+<title>Libro de Reclamaciones — La Empanada Dorada</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥟</text></svg>"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --gold:#C8902A;--gold2:#E8B84B;--brown:#160A00;--brown2:#2A1200;
+  --cream:#FFF8EC;--c2:rgba(255,248,236,.8);--c3:rgba(255,248,236,.45);
+  --red:#C0392B;--green:#16a34a;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--brown);color:var(--cream);min-height:100vh;line-height:1.8;}
+a{color:var(--gold);text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+.top-nav{background:rgba(22,10,0,.96);border-bottom:1px solid rgba(200,144,42,.1);padding:.9rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px);}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--gold);font-style:italic;}
+.nav-back{background:rgba(200,144,42,.1);border:1px solid rgba(200,144,42,.25);color:var(--gold);padding:.4rem 1rem;border-radius:2rem;font-size:.78rem;font-weight:500;transition:all .2s;}
+.nav-back:hover{background:rgba(200,144,42,.2);text-decoration:none;}
+
+.page-hero{background:linear-gradient(135deg,#1a0800,#2a1200);border-bottom:1px solid rgba(200,144,42,.12);padding:3.5rem 2rem 3rem;text-align:center;}
+.page-hero .ph-label{display:inline-flex;align-items:center;gap:.5rem;color:var(--gold);font-size:.68rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;margin-bottom:.8rem;}
+.page-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3rem);color:var(--cream);margin-bottom:.6rem;}
+.page-hero h1 em{color:var(--gold);font-style:italic;}
+.page-hero .ph-meta{color:var(--c3);font-size:.82rem;}
+.page-hero .ph-meta strong{color:var(--c2);}
+.legal-notice{display:inline-flex;align-items:center;gap:.5rem;margin-top:1rem;background:rgba(200,144,42,.1);border:1px solid rgba(200,144,42,.25);border-radius:2rem;padding:.4rem 1.1rem;font-size:.75rem;color:var(--c2);}
+
+.content-wrap{max-width:860px;margin:0 auto;padding:3rem 2rem 5rem;}
+.info-banner{background:rgba(200,144,42,.07);border:1.5px solid rgba(200,144,42,.25);border-radius:1.2rem;padding:1.3rem 1.6rem;margin-bottom:2.5rem;display:flex;align-items:flex-start;gap:1rem;}
+.ib-icon{font-size:1.6rem;flex-shrink:0;margin-top:.1rem;}
+.ib-text h4{font-weight:600;color:var(--gold);margin-bottom:.3rem;font-size:.95rem;}
+.ib-text p{color:var(--c2);font-size:.87rem;line-height:1.75;margin:0;}
+
+/* FORM CARD */
+.form-card{background:rgba(255,248,236,.02);border:1px solid rgba(200,144,42,.12);border-radius:1.6rem;padding:2.2rem 2rem;margin-bottom:2.5rem;}
+.form-card-header{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin-bottom:.4rem;}
+.form-card-header h2{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--cream);}
+.form-card .fc-sub{color:var(--c3);font-size:.85rem;margin-bottom:1.8rem;font-weight:300;}
+
+/* DB STATUS */
+.db-status{display:inline-flex;align-items:center;gap:.4rem;font-size:.68rem;padding:.22rem .7rem;border-radius:1rem;white-space:nowrap;}
+.db-status.ok{background:rgba(22,163,74,.15);border:1px solid rgba(22,163,74,.3);color:#4ade80;}
+.db-status.fail{background:rgba(192,57,43,.1);border:1px solid rgba(192,57,43,.25);color:#f87171;}
+.db-status.checking{background:rgba(200,144,42,.1);border:1px solid rgba(200,144,42,.2);color:var(--gold);}
+.db-dot{width:5px;height:5px;border-radius:50%;background:currentColor;display:inline-block;animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:.3}50%{opacity:1}}
+
+/* FIELDS */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+.form-group{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1rem;}
+.form-group label{font-size:.8rem;font-weight:600;color:var(--c2);letter-spacing:.3px;}
+.form-group label .req{color:var(--gold);}
+.form-group input,.form-group select,.form-group textarea{background:rgba(255,248,236,.04);border:1.5px solid rgba(200,144,42,.12);border-radius:.8rem;padding:.7rem 1rem;color:var(--cream);font-size:.88rem;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s,background .2s;width:100%;}
+.form-group input::placeholder,.form-group textarea::placeholder{color:var(--c3);}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:rgba(200,144,42,.45);background:rgba(255,248,236,.06);}
+.form-group select option{background:#2a1200;color:var(--cream);}
+.form-group textarea{min-height:130px;resize:vertical;line-height:1.6;}
+.tipo-btns{display:flex;gap:.6rem;flex-wrap:wrap;}
+.tipo-btn{background:rgba(255,248,236,.04);border:1.5px solid rgba(200,144,42,.12);border-radius:.7rem;padding:.5rem 1rem;font-size:.82rem;color:var(--c2);cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.tipo-btn.active,.tipo-btn:hover{background:rgba(200,144,42,.12);border-color:rgba(200,144,42,.4);color:var(--gold);}
+
+/* SUBMIT */
+.submit-btn{width:100%;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--brown);border:none;padding:1rem;border-radius:2rem;font-size:.95rem;font-weight:700;cursor:pointer;transition:transform .2s,box-shadow .2s;margin-top:.5rem;font-family:'DM Sans',sans-serif;position:relative;}
+.submit-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 32px rgba(200,144,42,.45);}
+.submit-btn:disabled{opacity:.7;cursor:not-allowed;transform:none;}
+.submit-btn .btn-inner{display:flex;align-items:center;justify-content:center;gap:.5rem;}
+.submit-btn .spinner{display:none;width:18px;height:18px;border:2.5px solid rgba(28,13,0,.25);border-top-color:var(--brown);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.submit-btn.loading .btn-inner{display:none;}
+.submit-btn.loading .spinner{display:block;}
+
+/* MESSAGES */
+.success-msg{display:none;background:rgba(22,163,74,.1);border:1px solid rgba(22,163,74,.3);border-radius:1rem;padding:1.5rem;text-align:center;margin-top:1.2rem;}
+.success-msg .sm-icon{font-size:2.2rem;display:block;margin-bottom:.6rem;}
+.success-msg h4{color:#4ade80;font-weight:700;margin-bottom:.5rem;font-size:1.1rem;}
+.success-msg p{color:var(--c2);font-size:.87rem;line-height:1.8;}
+.error-msg{display:none;background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.25);border-radius:.8rem;padding:.9rem 1.2rem;margin-top:.8rem;font-size:.85rem;color:#f87171;line-height:1.7;}
+
+/* INFO BLOCKS */
+.section-block{margin-bottom:1.5rem;padding:1.6rem;background:rgba(255,248,236,.02);border:1px solid rgba(200,144,42,.09);border-radius:1.2rem;}
+.section-block h3{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--gold);margin-bottom:.8rem;}
+.section-block p{color:var(--c2);font-size:.88rem;line-height:1.85;margin-bottom:.5rem;font-weight:300;}
+.section-block ul{color:var(--c2);font-size:.88rem;line-height:1.85;font-weight:300;padding-left:1.3rem;}
+.section-block ul li{margin-bottom:.25rem;}
+.timeline{display:flex;flex-direction:column;gap:.8rem;margin-top:.5rem;}
+.tl-item{display:flex;align-items:flex-start;gap:.9rem;}
+.tl-num{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--brown);font-size:.82rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.1rem;}
+.tl-text h5{font-weight:600;font-size:.88rem;color:var(--cream);}
+.tl-text p{font-size:.82rem;color:var(--c3);margin:0;line-height:1.6;font-weight:300;}
+
+.page-footer{background:rgba(22,10,0,.8);border-top:1px solid rgba(200,144,42,.09);padding:1.8rem 2rem;text-align:center;}
+.page-footer p{color:var(--c3);font-size:.78rem;margin-bottom:.4rem;}
+.page-footer .ft-links{display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;margin-top:.8rem;}
+.page-footer .ft-links a{color:var(--c3);font-size:.78rem;transition:color .2s;}
+.page-footer .ft-links a:hover{color:var(--gold);text-decoration:none;}
+
+@media(max-width:600px){
+  .form-row{grid-template-columns:1fr;}
+  .content-wrap{padding:2rem 1.2rem 4rem;}
+  .form-card{padding:1.5rem 1.2rem;}
+  .form-card-header{flex-direction:column;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="index.html" class="nav-logo">🥟 La Empanada Dorada</a>
+  <a href="index.html" class="nav-back">← Volver al inicio</a>
+</nav>
+
+<div class="page-hero">
+  <div class="ph-label">📖 Libro de Reclamaciones</div>
+  <h1>Libro de <em>Reclamaciones</em></h1>
+  <p class="ph-meta">Conforme al <strong>D.S. N° 011-2011-PCM</strong> — Código de Protección y Defensa del Consumidor</p>
+  <div class="legal-notice">⚖️ La respuesta será enviada en un máximo de <strong style="color:var(--gold);margin-left:.3rem">30 días calendario</strong></div>
+</div>
+
+<div class="content-wrap">
+
+  <div class="info-banner">
+    <span class="ib-icon">ℹ️</span>
+    <div class="ib-text">
+      <h4>¿Queja o Reclamo?</h4>
+      <p><strong style="color:var(--cream)">Queja:</strong> disconformidad con la atención al cliente o el servicio (no implica un perjuicio económico directo).<br>
+      <strong style="color:var(--cream)">Reclamo:</strong> disconformidad con el producto adquirido o el servicio pagado (implica un perjuicio).</p>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="form-card-header">
+      <h2>📝 Registrar tu reclamación</h2>
+      <span class="db-status checking" id="dbStatus"><span class="db-dot"></span> Conectando...</span>
+    </div>
+    <p class="fc-sub">Tu reclamación quedará guardada y nos comunicaremos contigo dentro de los 30 días establecidos por ley.</p>
+
+    <form id="reclamaForm" onsubmit="submitForm(event)">
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nombre completo <span class="req">*</span></label>
+          <input type="text" id="nombre" placeholder="Tu nombre" required autocomplete="name"/>
+        </div>
+        <div class="form-group">
+          <label>Correo electrónico <span class="req">*</span></label>
+          <input type="email" id="email" placeholder="tu@correo.com" required autocomplete="email"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Número de WhatsApp <span class="req">*</span></label>
+        <input type="tel" id="telefono" placeholder="9XX XXX XXX" required autocomplete="tel"/>
+      </div>
+
+      <div class="form-group">
+        <label>Tipo de reclamación <span class="req">*</span></label>
+        <div class="tipo-btns">
+          <button type="button" class="tipo-btn active" onclick="setTipo(this,'Reclamo')">⚠️ Reclamo</button>
+          <button type="button" class="tipo-btn" onclick="setTipo(this,'Queja')">💬 Queja</button>
+        </div>
+        <input type="hidden" id="tipoReclamacion" value="Reclamo"/>
+      </div>
+
+      <!-- 
+        COLUMNA: motivo
+        Usamos el campo "motivo" de la tabla contactos.
+        El valor será el tipo (Reclamo/Queja) + el motivo seleccionado.
+      -->
+      <div class="form-group">
+        <label>Motivo <span class="req">*</span></label>
+        <select id="motivo" required>
+          <option value="" disabled selected>Selecciona el motivo</option>
+          <option>Producto en mal estado o diferente al pedido</option>
+          <option>Demora excesiva en la entrega</option>
+          <option>Pedido incompleto o faltante</option>
+          <option>Cobro incorrecto o error en el precio</option>
+          <option>Mala atención por parte del equipo</option>
+          <option>Producto no entregado</option>
+          <option>Otro motivo</option>
+        </select>
+      </div>
+
+      <!--
+        COLUMNA: asunto
+        Usamos "asunto" para guardar la solución esperada.
+      -->
+      <div class="form-group">
+        <label>¿Qué solución esperas?</label>
+        <select id="solucion">
+          <option value="" disabled selected>Selecciona una opción</option>
+          <option>Reposición del producto</option>
+          <option>Devolución del dinero</option>
+          <option>Descuento en próximo pedido</option>
+          <option>Solo quiero dejar constancia</option>
+          <option>Otra solución</option>
+        </select>
+      </div>
+
+      <!--
+        COLUMNA: mensaje
+        Descripción detallada del reclamo.
+      -->
+      <div class="form-group">
+        <label>Descripción detallada <span class="req">*</span></label>
+        <textarea id="descripcion" placeholder="Cuéntanos con detalle qué ocurrió, qué esperabas y qué resultado deseas..." required></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">
+        <div class="btn-inner">📨 Enviar reclamación</div>
+        <div class="spinner"></div>
+      </button>
+
+      <div class="error-msg" id="errorMsg">
+        ⚠️ Hubo un problema al guardar. Tu reclamo fue enviado de todas formas por WhatsApp. Para confirmar escríbenos al <strong>925 863 778</strong>.
+      </div>
+
+    </form>
+
+    <div class="success-msg" id="successMsg">
+      <span class="sm-icon">✅</span>
+      <h4>¡Reclamación registrada!</h4>
+      <p>Tu reclamación fue guardada en nuestro sistema.<br><br>
+      Nos comunicaremos contigo al WhatsApp indicado dentro de los <strong>30 días calendario</strong> establecidos por ley.<br><br>
+      Para atención más rápida escríbenos al <strong style="color:var(--gold)">925 863 778</strong>.</p>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h3>📋 ¿Qué pasa después de registrar tu reclamación?</h3>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-num">1</div><div class="tl-text"><h5>Guardado inmediato</h5><p>Tu reclamación queda registrada en nuestra base de datos.</p></div></div>
+      <div class="tl-item"><div class="tl-num">2</div><div class="tl-text"><h5>Evaluación (1–5 días)</h5><p>Revisamos el caso, los comprobantes y coordinamos internamente.</p></div></div>
+      <div class="tl-item"><div class="tl-num">3</div><div class="tl-text"><h5>Contacto por WhatsApp</h5><p>Nos comunicamos contigo para ofrecerte una solución.</p></div></div>
+      <div class="tl-item"><div class="tl-num">4</div><div class="tl-text"><h5>Resolución (máx. 30 días)</h5><p>Comunicamos la decisión final conforme a la ley de protección al consumidor.</p></div></div>
+    </div>
+  </div>
+
+  <div class="section-block">
+    <h3>⚖️ Tus derechos como consumidor</h3>
+    <p>De acuerdo al <strong style="color:var(--cream)">Código de Protección y Defensa del Consumidor (Ley N° 29571)</strong>, tienes derecho a:</p>
+    <ul>
+      <li>Recibir el producto o servicio tal como fue ofrecido y pagado.</li>
+      <li>Información veraz y oportuna sobre el producto.</li>
+      <li>Que tu reclamo sea atendido dentro del plazo legal de 30 días calendario.</li>
+      <li>Acudir al INDECOPI si no obtienes respuesta satisfactoria.</li>
+    </ul>
+    <p style="margin-top:.8rem;">Si no recibes respuesta, puedes acudir a <strong style="color:var(--cream)">INDECOPI</strong>: <a href="https://www.indecopi.gob.pe" target="_blank" rel="noopener">www.indecopi.gob.pe</a> · teléfono <strong style="color:var(--gold)">224-7777</strong>.</p>
+  </div>
+
+  <div class="section-block">
+    <h3>📱 Contacto directo para atención rápida</h3>
+    <p>Si necesitas atención inmediata, escríbenos directamente:</p>
+    <ul>
+      <li>📞 <strong style="color:var(--cream)">WhatsApp:</strong> <a href="https://wa.me/51925863778">925 863 778</a></li>
+      <li>⏰ <strong style="color:var(--cream)">Horario:</strong> Lunes a Domingo, 8:00 am – 9:00 pm</li>
+    </ul>
+  </div>
+
+</div>
+
+<footer class="page-footer">
+  <p>© 2025 La Empanada Dorada — Libro de Reclamaciones conforme a D.S. N° 011-2011-PCM</p>
+  <div class="ft-links">
+    <a href="index.html">Inicio</a>
+    <a href="terminos.html">Términos y Condiciones</a>
+    <a href="privacidad.html">Política de Privacidad</a>
+    <a href="nosotros.html">Datos del Negocio</a>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ── SUPABASE — mismas credenciales y misma tabla "contactos" ──
+const SUPA_URL = "https://jpayjofxrkofbdmkykwz.supabase.co";
+const SUPA_KEY = "sb_publishable_CiyuoJMygYaTDUw43NjSYg_hAN_syPp";
+const db = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+
+// ── VERIFICAR CONEXIÓN AL CARGAR ──
+(async function checkDB() {
+  const badge = document.getElementById('dbStatus');
+  try {
+    const { error } = await db.from('contactos').select('id').limit(1);
+    if (error) throw error;
+    badge.className = 'db-status ok';
+    badge.innerHTML = '<span class="db-dot"></span> Base de datos activa';
+  } catch(e) {
+    badge.className = 'db-status fail';
+    badge.innerHTML = '<span class="db-dot"></span> Sin conexión';
+  }
+})();
+
+// ── TIPO RECLAMO / QUEJA ──
+function setTipo(btn, valor) {
+  document.querySelectorAll('.tipo-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tipoReclamacion').value = valor;
+}
+
+// ── SUBMIT ──
+async function submitForm(e) {
+  e.preventDefault();
+
+  const nombre      = document.getElementById('nombre').value.trim();
+  const email       = document.getElementById('email').value.trim();
+  const telefono    = document.getElementById('telefono').value.trim();
+  const tipo        = document.getElementById('tipoReclamacion').value;
+  const motivoSel   = document.getElementById('motivo').value;
+  const solucion    = document.getElementById('solucion').value || 'No especificada';
+  const descripcion = document.getElementById('descripcion').value.trim();
+
+  if (!motivoSel)               { alert('Por favor selecciona el motivo.'); return; }
+  if (descripcion.length < 10)  { alert('Por favor describe con más detalle lo ocurrido.'); return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.classList.add('loading');
+  btn.disabled = true;
+  document.getElementById('errorMsg').style.display = 'none';
+
+  // ── Mapeamos a los campos reales de la tabla "contactos" ──
+  // nombre   → nombre
+  // email    → email
+  // telefono → telefono
+  // motivo   → "[Tipo] Motivo"   ej: "[Reclamo] Producto en mal estado"
+  // asunto   → "Solución esperada: ..."
+  // mensaje  → descripción completa del reclamo
+  const payload = {
+    nombre,
+    email,
+    telefono:  telefono || null,
+    motivo:    `[${tipo}] ${motivoSel}`,
+    asunto:    `Solución esperada: ${solucion}`,
+    mensaje:   descripcion,
+  };
+
+  let dbOk = false;
+  try {
+    const { error } = await db.from('contactos').insert([payload]);
+    if (error) throw error;
+    dbOk = true;
+  } catch (err) {
+    console.error('Supabase error:', err);
+    const badge = document.getElementById('dbStatus');
+    badge.className = 'db-status fail';
+    badge.innerHTML = '<span class="db-dot"></span> Error al guardar';
+  }
+
+  btn.classList.remove('loading');
+  btn.disabled = false;
+
+  // ── WhatsApp como respaldo (siempre) ──
+  const waMsg =
+    `📖 *LIBRO DE RECLAMACIONES*\n\n` +
+    `👤 *Nombre:* ${nombre}\n` +
+    `📧 *Email:* ${email}\n` +
+    `📱 *WhatsApp:* ${telefono}\n` +
+    `⚠️ *Tipo:* ${tipo}\n` +
+    `📋 *Motivo:* ${motivoSel}\n` +
+    `💡 *Solución esperada:* ${solucion}\n` +
+    `📝 *Descripción:* ${descripcion}\n` +
+    `🗄️ *BD:* ${dbOk ? 'Guardado ✅' : 'Error ❌'}`;
+
+  if (dbOk) {
+    document.getElementById('reclamaForm').style.display = 'none';
+    document.getElementById('successMsg').style.display  = 'block';
+    setTimeout(() => {
+      window.open(`https://wa.me/51925863778?text=${encodeURIComponent(waMsg)}`, '_blank');
+    }, 900);
+  } else {
+    document.getElementById('errorMsg').style.display = 'block';
+    window.open(`https://wa.me/51925863778?text=${encodeURIComponent(waMsg)}`, '_blank');
+  }
+}
+</script>
+
+</body>
+</html>
