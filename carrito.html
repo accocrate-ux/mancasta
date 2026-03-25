@@ -651,7 +651,6 @@ nav{position:sticky;top:0;z-index:200;
       <div class="sec-sub">Paga de forma segura con tarjeta o Yape — procesado por Culqi</div>
     </div>
     <div class="pay-grid">
-      <!-- Resumen -->
       <div class="recap-box">
         <div class="recap-title">📋 Tu pedido</div>
         <div id="recapItems"></div>
@@ -677,7 +676,6 @@ nav{position:sticky;top:0;z-index:200;
         </div>
       </div>
 
-      <!-- Pago Culqi -->
       <div class="culqi-box">
         <div class="culqi-title">💳 Pago seguro</div>
         <div class="culqi-notice">
@@ -726,12 +724,12 @@ nav{position:sticky;top:0;z-index:200;
 
 <script>
 /* ─────────────────────────────────────────────────────────
-   ⚠️  REEMPLAZA ESTA LLAVE CON LA TUYA (panel Culqi → API Keys)
+   LLAVE PÚBLICA CULQI
    ───────────────────────────────────────────────────────── */
 var CULQI_PUBLIC_KEY = 'pk_live_b41GkCTCQYF3QSjL';
 
 /* ─────────────────────────────────────────────────────────
-   INICIALIZA CULQI — se llama una sola vez al cargar la página
+   INICIALIZA CULQI
    ───────────────────────────────────────────────────────── */
 function initCulqi() {
   if (typeof Culqi === 'undefined') {
@@ -753,11 +751,8 @@ function initCulqi() {
 
 /* ─────────────────────────────────────────────────────────
    ABRIR CHECKOUT CULQI
-   ✅ CORRECCIÓN PRINCIPAL: esta función estaba vacía antes.
-   Ahora configura el monto, moneda, descripción y email
-   ANTES de llamar a Culqi.open() para que el cobro sea real.
    ───────────────────────────────────────────────────────── */
- var culqiAbierto = false; // ← nueva variable de control
+var culqiAbierto = false;
 
 function abrirCulqi() {
   if (typeof Culqi === 'undefined') {
@@ -766,8 +761,10 @@ function abrirCulqi() {
   }
 
   var totalCentimos = Math.round(grandTotal() * 100);
-  if (totalCentimos <= 0) {
-    toast('⚠️ El total no puede ser S/ 0.00');
+
+  /* ✅ Mínimo S/ 5.00 para evitar rechazos bancarios */
+  if (totalCentimos < 500) {
+    toast('⚠️ El monto mínimo para pagar es S/ 5.00');
     return;
   }
 
@@ -787,11 +784,10 @@ function abrirCulqi() {
   var btn = document.getElementById('culqiPayBtn');
   btn.disabled = true;
   btn.textContent = '⏳ Abriendo checkout...';
-  culqiAbierto = true; // ← marcar que está abierto
+  culqiAbierto = true;
 
   Culqi.open();
 
-  // Solo rehabilitar si el usuario CERRÓ el modal (no si pagó)
   var check = setInterval(function() {
     if (!culqiAbierto) {
       clearInterval(check);
@@ -802,8 +798,7 @@ function abrirCulqi() {
 }
 
 /* ─────────────────────────────────────────────────────────
-   CALLBACK DE CULQI — Culqi llama esta función al terminar
-   ✅ CORRECCIÓN: el nombre debe ser exactamente "culqi" (minúscula)
+   CALLBACK DE CULQI
    ───────────────────────────────────────────────────────── */
 function culqi() {
   culqiAbierto = false;
@@ -890,6 +885,7 @@ function culqi() {
     if (btn) { btn.disabled = false; btn.textContent = '💳 Pagar ahora — seguro con Culqi'; }
   }
 }
+
 /* ═══════════════════════════════════════════════════════════
    UTILIDADES
 ═══════════════════════════════════════════════════════════ */
@@ -984,12 +980,13 @@ function dateLong(d) {
 }
 
 /* ─────────── ZONES ─────────── */
+/* ✅ CORRECCIÓN: Santiago de Surco ahora tiene costo 0 (gratis) */
 var ZONES = [
   {id:'mira',      name:'Miraflores',              cost:9  },
   {id:'sanisi',    name:'San Isidro',              cost:9  },
   {id:'barranco',  name:'Barranco',                cost:9  },
   {id:'chorri',    name:'Chorrillos',              cost:9  },
-  {id:'surco',     name:'Santiago de Surco',       cost:0 },
+  {id:'surco',     name:'Santiago de Surco',       cost:0  },
   {id:'sjm',       name:'San Juan de Miraflores',  cost:9  },
   {id:'sanborja',  name:'San Borja',               cost:9  },
   {id:'surquillo', name:'Surquillo',               cost:9  },
@@ -1194,9 +1191,10 @@ function buildZonePicker(filter) {
     return;
   }
   el.innerHTML = list.map(function(z) {
+    var costoLabel = z.cost === 0 ? '🎉 Gratis' : '~' + fmt(z.cost) + ' (ref.)';
     return '<button class="zb ' + (selZone && selZone.id === z.id ? 'on' : '') + '" onclick="pickZone(\'' + z.id + '\')">' +
       '<span class="zb-n">' + z.name + '</span>' +
-      '<span class="zb-c">~' + fmt(z.cost) + ' (ref.)</span>' +
+      '<span class="zb-c">' + costoLabel + '</span>' +
     '</button>';
   }).join('') + (q ? '' : '<div class="no-cover">🚫 Sin cobertura: Carabayllo · Ventanilla · Puente Piedra · Lurigancho-Chosica · Pachacámac · Lurín</div>');
 }
@@ -1208,7 +1206,8 @@ function pickZone(id) {
   buildZonePicker((document.getElementById('zoneSearch') || {value:''}).value || '');
   if (selZone) {
     unlockAddressField();
-    toast('📍 ' + selZone.name + ' · ~' + fmt(selZone.cost) + ' · Escribe tu dirección');
+    var costoMsg = selZone.cost === 0 ? '¡Delivery gratis!' : '~' + fmt(selZone.cost);
+    toast('📍 ' + selZone.name + ' · ' + costoMsg + ' · Escribe tu dirección');
   } else {
     lockAddressField();
   }
@@ -1269,10 +1268,18 @@ function tryGoTo4() {
 }
 
 /* ─────────── DESCUENTOS ─────────── */
+/*
+  ✅ CORRECCIÓN PRINCIPAL:
+  - PRUEBA5: descuento fijo de S/ 21 sobre pack x4 (S/26) → total S/ 5.00 para prueba
+  - VERANO10: 10% (no 100% como estaba antes — eso causaba el error)
+  - BIENVENIDO: 15%
+  - PROMO20: 20%
+*/
 var DISCOUNT_CODES = {
-  'VERANO10':   { pct: 100, label: 'Promo Verano' },
-  'BIENVENIDO': { pct: 15, label: 'Cliente nuevo' },
-  'PROMO20':    { pct: 20, label: 'Oferta especial' },
+  'PRUEBA5':    { type: 'fixed',   amount: 21,  label: 'Código de prueba' },
+  'VERANO10':   { type: 'pct',     pct: 10,     label: 'Promo Verano'    },
+  'BIENVENIDO': { type: 'pct',     pct: 15,     label: 'Cliente nuevo'   },
+  'PROMO20':    { type: 'pct',     pct: 20,     label: 'Oferta especial' },
 };
 
 function applyDiscount() {
@@ -1280,11 +1287,12 @@ function applyDiscount() {
   if (!code) { showDiscMsg('Ingresa un código primero', 'warn'); return; }
   var found = DISCOUNT_CODES[code];
   if (found) {
-    activeDiscount = { pct: found.pct, label: found.label, code: code };
+    activeDiscount = { type: found.type, pct: found.pct || 0, amount: found.amount || 0, label: found.label, code: code };
     document.getElementById('discountInp').style.borderColor = 'rgba(22,163,74,.5)';
     document.getElementById('discountIcon').textContent = '✅';
-    showDiscMsg('✓ ' + found.label + ' — ' + found.pct + '% de descuento aplicado', 'ok');
-    toast('🏷️ ' + found.pct + '% de descuento aplicado');
+    var descLabel = found.type === 'fixed' ? '−S/ ' + found.amount.toFixed(2) : found.pct + '%';
+    showDiscMsg('✓ ' + found.label + ' — ' + descLabel + ' de descuento aplicado', 'ok');
+    toast('🏷️ Descuento aplicado: ' + descLabel);
   } else {
     activeDiscount = null;
     document.getElementById('discountInp').style.borderColor = 'rgba(192,57,43,.5)';
@@ -1315,9 +1323,22 @@ function showDiscMsg(text, type) {
 }
 
 /* ─────────── PASO 4 ─────────── */
-function delCost()    { return delivMode === 'store' ? 0 : (selZone ? selZone.cost : 0); }
-function discAmt()    { return (!activeDiscount || !pack) ? 0 : +(pack.price * activeDiscount.pct / 100).toFixed(2); }
-function grandTotal() { return (pack ? pack.price : 0) - discAmt() + delCost(); }
+function delCost() { return delivMode === 'store' ? 0 : (selZone ? selZone.cost : 0); }
+
+/* ✅ discAmt ahora soporta descuento fijo (fixed) y porcentaje (pct) */
+function discAmt() {
+  if (!activeDiscount || !pack) return 0;
+  if (activeDiscount.type === 'fixed') {
+    return Math.min(activeDiscount.amount, pack.price); // no descuenta más que el precio
+  }
+  return +(pack.price * activeDiscount.pct / 100).toFixed(2);
+}
+
+/* ✅ grandTotal nunca baja de 0 */
+function grandTotal() {
+  var total = (pack ? pack.price : 0) - discAmt() + delCost();
+  return Math.max(0, total);
+}
 
 function buildRecap() {
   var used = FL.filter(function(f){ return f.qty > 0; });
@@ -1334,7 +1355,8 @@ function buildRecap() {
   var discRow = document.getElementById('rDiscRow');
   if (da > 0 && activeDiscount) {
     discRow.style.display = 'flex';
-    document.getElementById('rDiscName').textContent = '(' + activeDiscount.code + ' ' + activeDiscount.pct + '% OFF)';
+    var descLabel = activeDiscount.type === 'fixed' ? '' : ' ' + activeDiscount.pct + '% OFF';
+    document.getElementById('rDiscName').textContent = '(' + activeDiscount.code + descLabel + ')';
     document.getElementById('rDiscVal').textContent  = '−' + fmt(da);
   } else discRow.style.display = 'none';
 
@@ -1344,10 +1366,10 @@ function buildRecap() {
     delRow.style.display = 'flex';
     document.getElementById('rDelLabel').textContent = '🏠 Recojo en tienda';
     document.getElementById('rDel').textContent = 'S/ 0.00';
-  } else if (selZone && dc > 0) {
+  } else if (selZone) {
     delRow.style.display = 'flex';
     document.getElementById('rDelLabel').textContent = '🛵 Delivery — ' + selZone.name;
-    document.getElementById('rDel').textContent = fmt(dc) + ' (ref.)';
+    document.getElementById('rDel').textContent = dc === 0 ? '🎉 Gratis' : fmt(dc) + ' (ref.)';
   } else delRow.style.display = 'none';
 
   var g = grandTotal();
@@ -1359,8 +1381,8 @@ function buildRecap() {
   var address = (document.getElementById('fAddress')||{value:''}).value.trim();
   var di = '';
   if (delivMode === 'store')   di = '🏠 Recojo en tienda';
-  else if (selZone && address) di = '📍 ' + selZone.name + ' · ' + address + '<br>🛵 Yango/InDrive (~' + fmt(dc) + ' ref.)';
-  else if (selZone)            di = '📍 ' + selZone.name + ' — Yango/InDrive (~' + fmt(dc) + ' ref.)';
+  else if (selZone && address) di = '📍 ' + selZone.name + ' · ' + address + (dc === 0 ? '<br>🎉 Delivery gratis' : '<br>🛵 Yango/InDrive (~' + fmt(dc) + ' ref.)');
+  else if (selZone)            di = '📍 ' + selZone.name + (dc === 0 ? ' — 🎉 Delivery gratis' : ' — Yango/InDrive (~' + fmt(dc) + ' ref.)');
   document.getElementById('rDelivInfo').innerHTML = di || '—';
 
   var nm = document.getElementById('fName').value.trim();
